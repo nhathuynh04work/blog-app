@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { PostsService } from "./posts.service";
-import type { Post as PostInterface } from "./interfaces/post.interface";
+import type { PostInterface } from "./interfaces/post.interface";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type CreatePostDTO, CreatePostSchema } from "./dtos/create-post.dto";
 
@@ -9,16 +9,16 @@ export class PostsController {
     constructor(private postsService: PostsService) {}
 
     @Get()
-    getPosts(): PostInterface[] {
-        const posts: PostInterface[] = this.postsService.getPosts();
+    async getPosts(): Promise<PostInterface[]> {
+        const posts = await this.postsService.getPosts();
         return posts;
     }
 
     @Post()
-    createPost(
+    async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
-    ): PostInterface {
-        const newPost = this.postsService.createPost(data);
+    ): Promise<PostInterface> {
+        const newPost = await this.postsService.createPost(data);
         return newPost;
     }
 }
