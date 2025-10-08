@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
 	Form,
 	FormControl,
@@ -66,7 +67,12 @@ export default function CreateBlogForm() {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Create</Button>
+				<DialogFooter>
+					<DialogClose asChild>
+						<Button variant="outline">Cancel</Button>
+					</DialogClose>
+					<Button type="submit">Create</Button>
+				</DialogFooter>
 			</form>
 		</Form>
 	);

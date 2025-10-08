@@ -1,6 +1,5 @@
 import BlogList from "@/components/features/blog/blog-list";
-import CreateBlogForm from "@/components/features/blog/create-blog-form";
-import { Button } from "@/components/ui/button";
+import CreateBlogDialog from "@/components/features/blog/create-blog-dialog";
 import { Blog } from "@/types/blog";
 
 const blogs: Blog[] = [
@@ -29,10 +28,9 @@ export default function BlogsPage() {
 		<main className="max-w-3xl mx-auto py-10 px-6 space-y-6">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-semibold tracking-tight">Blogs</h1>
-				<Button variant="outline">New blog</Button>
+				<CreateBlogDialog />
 			</div>
 			<BlogList blogs={blogs} />
-			<CreateBlogForm />
 		</main>
 	);
 }
