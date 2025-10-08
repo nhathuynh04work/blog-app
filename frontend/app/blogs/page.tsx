@@ -1,5 +1,5 @@
-// app/blogs/page.tsx
 import BlogList from "@/components/features/blog/blog-list";
+import CreateBlogForm from "@/components/features/blog/create-blog-form";
 import { Button } from "@/components/ui/button";
 import { Blog } from "@/types/blog";
 
@@ -32,6 +32,7 @@ export default function BlogsPage() {
 				<Button variant="outline">New blog</Button>
 			</div>
 			<BlogList blogs={blogs} />
+			<CreateBlogForm />
 		</main>
 	);
 }
