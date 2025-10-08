@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createBlog } from "../../../app/blogs/actions";
+import { toast } from "sonner";
 
 export default function CreateBlogForm({
 	onSuccess,
@@ -44,9 +45,11 @@ export default function CreateBlogForm({
 			await createBlog(formData);
 
 			form.reset();
+			toast.success("Blog created!");
 			onSuccess?.(); // Notify parent to close the dialog or refresh list
-		} catch (err) {
+		} catch {
 			setError("Failed to create blog. Please try again.");
+			toast.error("Fail to create blog.");
 		} finally {
 			setLoading(false);
 		}
