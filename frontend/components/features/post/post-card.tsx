@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Blog } from "@/types/blog";
+import { Blog } from "@/types/post";
 import { format } from "date-fns";
 
 export default function BlogCard({ blog }: { blog: Blog }) {

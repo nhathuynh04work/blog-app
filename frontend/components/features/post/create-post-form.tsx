@@ -13,40 +13,35 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { createBlogSchema } from "@/lib/validations";
+import { CreatePostDTO, CreatePostSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { createBlog } from "../../../app/blogs/actions";
 import { toast } from "sonner";
+import { createPost } from "@/app/posts/actions";
 
-export default function CreateBlogForm({
-	onSuccess,
-}: {
+interface CreatePostFormProps {
 	onSuccess?: () => void;
-}) {
+}
+
+export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const form = useForm<z.infer<typeof createBlogSchema>>({
-		resolver: zodResolver(createBlogSchema),
+	const form = useForm<CreatePostDTO>({
+		resolver: zodResolver(CreatePostSchema),
 		defaultValues: { title: "", content: "" },
 	});
 
-	async function onSubmit(values: z.infer<typeof createBlogSchema>) {
+	async function onSubmit(values: CreatePostDTO) {
 		setLoading(true);
 		setError(null);
 
 		try {
-			const formData = new FormData();
-			formData.append("title", values.title);
-			formData.append("content", values.content);
+			const newPost = await createPost(values);
+			console.log(newPost);
 
-			await createBlog(formData);
-
-			form.reset();
 			toast.success("Blog created!");
-			onSuccess?.(); // Notify parent to close the dialog or refresh list
+			onSuccess?.(); // Close the dialog
 		} catch {
 			setError("Failed to create blog. Please try again.");
 			toast.error("Fail to create blog.");

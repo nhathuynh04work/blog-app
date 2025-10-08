@@ -10,15 +10,15 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import CreateBlogForm from "./create-blog-form";
+import CreatePostForm from "./create-post-form";
 
-export default function CreateBlogDialog() {
+export default function CreatePostDialog() {
 	const [open, setOpen] = useState(false);
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline">New blog</Button>
+				<Button variant="outline">New post</Button>
 			</DialogTrigger>
 
 			<DialogContent>
@@ -29,7 +29,7 @@ export default function CreateBlogDialog() {
 					</DialogDescription>
 				</DialogHeader>
 
-				<CreateBlogForm onSuccess={() => setOpen(false)} />
+				<CreatePostForm onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	);
