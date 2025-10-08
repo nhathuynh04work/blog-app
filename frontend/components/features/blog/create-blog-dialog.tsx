@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -12,8 +13,10 @@ import {
 import CreateBlogForm from "./create-blog-form";
 
 export default function CreateBlogDialog() {
+	const [open, setOpen] = useState(false);
+
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button variant="outline">New blog</Button>
 			</DialogTrigger>
@@ -26,7 +29,7 @@ export default function CreateBlogDialog() {
 					</DialogDescription>
 				</DialogHeader>
 
-				<CreateBlogForm />
+				<CreateBlogForm onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	);

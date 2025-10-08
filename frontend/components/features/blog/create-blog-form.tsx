@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -16,18 +17,39 @@ import { createBlogSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { createBlog } from "../../../app/blogs/actions";
 
-export default function CreateBlogForm() {
+export default function CreateBlogForm({
+	onSuccess,
+}: {
+	onSuccess?: () => void;
+}) {
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
 	const form = useForm<z.infer<typeof createBlogSchema>>({
 		resolver: zodResolver(createBlogSchema),
-		defaultValues: {
-			title: "",
-			content: "",
-		},
+		defaultValues: { title: "", content: "" },
 	});
 
-	function onSubmit(values: z.infer<typeof createBlogSchema>) {
-		console.log(values);
+	async function onSubmit(values: z.infer<typeof createBlogSchema>) {
+		setLoading(true);
+		setError(null);
+
+		try {
+			const formData = new FormData();
+			formData.append("title", values.title);
+			formData.append("content", values.content);
+
+			await createBlog(formData);
+
+			form.reset();
+			onSuccess?.(); // Notify parent to close the dialog or refresh list
+		} catch (err) {
+			setError("Failed to create blog. Please try again.");
+		} finally {
+			setLoading(false);
+		}
 	}
 
 	return (
@@ -43,6 +65,7 @@ export default function CreateBlogForm() {
 								<Input
 									placeholder="The title of your blog"
 									{...field}
+									disabled={loading}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -61,17 +84,24 @@ export default function CreateBlogForm() {
 									{...field}
 									className="resize-none"
 									rows={10}
+									disabled={loading}
 								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+				{error && <p className="text-destructive text-sm">{error}</p>}
+
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline">Cancel</Button>
+						<Button variant="outline" disabled={loading}>
+							Cancel
+						</Button>
 					</DialogClose>
-					<Button type="submit">Create</Button>
+					<Button type="submit" disabled={loading}>
+						{loading ? "Creating..." : "Create"}
+					</Button>
 				</DialogFooter>
 			</form>
 		</Form>
