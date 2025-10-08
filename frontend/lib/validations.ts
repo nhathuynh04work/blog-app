@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const createBlogSchema = z.object({
+export const CreatePostSchema = z.object({
 	title: z
 		.string()
 		.min(2, { message: "Title must be at least 3 characters" }),
@@ -8,3 +8,5 @@ export const createBlogSchema = z.object({
 		.string()
 		.min(10, { message: "Content must be at least 10 characters" }),
 });
+
+export type CreatePostDTO = z.infer<typeof CreatePostSchema>;
