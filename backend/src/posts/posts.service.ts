@@ -12,8 +12,10 @@ export class PostsService {
 
     private mapPostDTO(post: Post): PostDTO {
         return {
-            ...post,
             id: post._id.toString(),
+            title: post.title,
+            content: post.content,
+            createdAt: post.createdAt,
         };
     }
 
@@ -29,10 +31,16 @@ export class PostsService {
 
     async updatePost(id: ObjectId, data: UpdatePostDTO): Promise<PostDTO> {
         const post = await this.postRepository.findById(id);
-
         if (!post) throw new NotFoundException("Post not found");
 
         const updated = await this.postRepository.update(post, data);
         return this.mapPostDTO(updated);
+    }
+
+    async deletePost(id: ObjectId): Promise<void> {
+        const post = await this.postRepository.findById(id);
+        if (!post) throw new NotFoundException("Post not found");
+
+        await this.postRepository.delete(id);
     }
 }

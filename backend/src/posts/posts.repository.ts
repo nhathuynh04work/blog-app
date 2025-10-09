@@ -31,4 +31,8 @@ export class PostsRepository {
         Object.assign(post, data);
         return this.repo.save(post);
     }
+
+    async delete(id: ObjectId) {
+        return this.repo.delete({ _id: id });
+    }
 }

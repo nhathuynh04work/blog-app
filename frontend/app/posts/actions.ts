@@ -25,3 +25,8 @@ export async function updatePost(
 	revalidatePath("/posts");
 	return res.data;
 }
+
+export async function deletePost(id: string): Promise<void> {
+	await api.delete(`posts/${id}`);
+	revalidatePath("/posts");
+}
