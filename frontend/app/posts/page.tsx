@@ -1,6 +1,6 @@
-import BlogList from "@/components/features/post/post-list";
 import { getPosts } from "./actions";
 import CreatePostDialog from "@/components/features/post/create-post-dialog";
+import PostList from "@/components/features/post/post-list";
 
 export default async function BlogsPage() {
 	const posts = await getPosts();
@@ -11,7 +11,7 @@ export default async function BlogsPage() {
 				<h1 className="text-2xl font-semibold tracking-tight">Posts</h1>
 				<CreatePostDialog />
 			</div>
-			<BlogList posts={posts} />
+			<PostList posts={posts} />
 		</main>
 	);
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -13,30 +12,33 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-	CreatePostDTO,
-	CreatePostSchema,
-} from "@/app/posts/dtos/create-post.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { createPost } from "@/app/posts/actions";
-import { useCreatePost } from "@/app/hooks/posts/useCreatePost";
+import {
+	UpdatePostDTO,
+	UpdatePostSchema,
+} from "@/app/posts/dtos/update-post.dto";
+import { Post } from "@/types/post";
+import { useUpdatePost } from "@/app/hooks/posts/useUpdatePost";
 
-interface CreatePostFormProps {
+interface UpdatePostFormProps {
 	onSuccess?: () => void;
+	post: Post;
 }
 
-export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
-	const form = useForm<CreatePostDTO>({
-		resolver: zodResolver(CreatePostSchema),
-		defaultValues: { title: "", content: "" },
+export default function UpdatePostForm({
+	onSuccess,
+	post,
+}: UpdatePostFormProps) {
+	const form = useForm<UpdatePostDTO>({
+		resolver: zodResolver(UpdatePostSchema),
+		defaultValues: { title: post.title, content: post.content },
 	});
 
-	const { mutateAsync, isPending } = useCreatePost();
+	const { mutateAsync, isPending } = useUpdatePost();
 
-	async function onSubmit(values: CreatePostDTO) {
-		await mutateAsync(values);
+	async function onSubmit(values: UpdatePostDTO) {
+		await mutateAsync({ id: post.id, data: values });
 		onSuccess?.(); //Close the dialog
 	}
 
@@ -50,11 +52,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 						<FormItem>
 							<FormLabel>Title</FormLabel>
 							<FormControl>
-								<Input
-									placeholder="The title of your blog"
-									{...field}
-									disabled={isPending}
-								/>
+								<Input {...field} disabled={isPending} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -68,7 +66,6 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 							<FormLabel>Content</FormLabel>
 							<FormControl>
 								<Textarea
-									placeholder="Tell people something about your day"
 									{...field}
 									className="resize-none"
 									rows={10}
@@ -87,7 +84,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 						</Button>
 					</DialogClose>
 					<Button type="submit" disabled={isPending}>
-						{isPending ? "Creating..." : "Create"}
+						{isPending ? "Updating..." : "Update"}
 					</Button>
 				</DialogFooter>
 			</form>
