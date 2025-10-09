@@ -33,6 +33,6 @@ export class PostsRepository {
     }
 
     async delete(id: ObjectId) {
-        return this.repo.delete(id);
+        return this.repo.delete({ _id: id });
     }
 }

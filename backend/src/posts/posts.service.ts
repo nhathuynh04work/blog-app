@@ -12,8 +12,10 @@ export class PostsService {
 
     private mapPostDTO(post: Post): PostDTO {
         return {
-            ...post,
             id: post._id.toString(),
+            title: post.title,
+            content: post.content,
+            createdAt: post.createdAt,
         };
     }
 

@@ -20,6 +20,9 @@ import {
 } from "@/app/posts/dtos/update-post.dto";
 import { Post } from "@/types/post";
 import { useUpdatePost } from "@/app/hooks/posts/useUpdatePost";
+import { useDeletePost } from "@/app/hooks/posts/useDeletePost";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;
@@ -35,11 +38,22 @@ export default function UpdatePostForm({
 		defaultValues: { title: post.title, content: post.content },
 	});
 
-	const { mutateAsync, isPending } = useUpdatePost();
+	const [isPending, startTransition] = useTransition();
+	const { mutateAsync: updatePost } = useUpdatePost();
+	const { mutateAsync: deletePost } = useDeletePost();
 
-	async function onSubmit(values: UpdatePostDTO) {
-		await mutateAsync({ id: post.id, data: values });
-		onSuccess?.(); //Close the dialog
+	function onSubmit(values: UpdatePostDTO) {
+		startTransition(async () => {
+			await updatePost({ id: post.id, data: values });
+			onSuccess?.(); // close dialog
+		});
+	}
+
+	function onDelete() {
+		startTransition(async () => {
+			await deletePost(post.id);
+			onSuccess?.(); // close dialog
+		});
 	}
 
 	return (
@@ -58,6 +72,7 @@ export default function UpdatePostForm({
 						</FormItem>
 					)}
 				/>
+
 				<FormField
 					control={form.control}
 					name="content"
@@ -79,12 +94,24 @@ export default function UpdatePostForm({
 
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline" disabled={isPending}>
-							Cancel
+						<Button
+							variant="outline"
+							disabled={isPending}
+							onClick={onDelete}>
+							{isPending ? (
+								<Loader2 className="h-4 w-4 animate-spin" />
+							) : (
+								"Delete"
+							)}
 						</Button>
 					</DialogClose>
+
 					<Button type="submit" disabled={isPending}>
-						{isPending ? "Updating..." : "Update"}
+						{isPending ? (
+							<Loader2 className="h-4 w-4 animate-spin" />
+						) : (
+							"Update"
+						)}
 					</Button>
 				</DialogFooter>
 			</form>
