@@ -1,4 +1,3 @@
-// hooks/useUpdatePost.ts
 "use client";
 
 import { updatePost } from "@/app/posts/actions";

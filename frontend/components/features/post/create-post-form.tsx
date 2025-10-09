@@ -21,35 +21,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createPost } from "@/app/posts/actions";
+import { useCreatePost } from "@/app/hooks/posts/useCreatePost";
 
 interface CreatePostFormProps {
 	onSuccess?: () => void;
 }
 
 export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
 	const form = useForm<CreatePostDTO>({
 		resolver: zodResolver(CreatePostSchema),
 		defaultValues: { title: "", content: "" },
 	});
 
+	const { mutateAsync, isPending } = useCreatePost();
+
 	async function onSubmit(values: CreatePostDTO) {
-		setLoading(true);
-		setError(null);
-
-		try {
-			await createPost(values);
-
-			toast.success("Blog created!");
-			onSuccess?.(); // Close the dialog
-		} catch {
-			setError("Failed to create blog. Please try again.");
-			toast.error("Fail to create blog.");
-		} finally {
-			setLoading(false);
-		}
+		await mutateAsync(values);
+		onSuccess?.(); //Close the dialog
 	}
 
 	return (
@@ -65,7 +53,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 								<Input
 									placeholder="The title of your blog"
 									{...field}
-									disabled={loading}
+									disabled={isPending}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -84,23 +72,22 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 									{...field}
 									className="resize-none"
 									rows={10}
-									disabled={loading}
+									disabled={isPending}
 								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				{error && <p className="text-destructive text-sm">{error}</p>}
 
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline" disabled={loading}>
+						<Button variant="outline" disabled={isPending}>
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button type="submit" disabled={loading}>
-						{loading ? "Creating..." : "Create"}
+					<Button type="submit" disabled={isPending}>
+						{isPending ? "Creating..." : "Create"}
 					</Button>
 				</DialogFooter>
 			</form>
