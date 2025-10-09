@@ -13,34 +13,39 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-	CreatePostDTO,
-	CreatePostSchema,
-} from "@/app/posts/dtos/create-post.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createPost } from "@/app/posts/actions";
+import {
+	UpdatePostDTO,
+	UpdatePostSchema,
+} from "@/app/posts/dtos/update-post.dto";
+import { Post } from "@/types/post";
 
-interface CreatePostFormProps {
+interface UpdatePostFormProps {
 	onSuccess?: () => void;
+	post: Post;
 }
 
-export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
+export default function UpdatePostForm({
+	onSuccess,
+	post,
+}: UpdatePostFormProps) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const form = useForm<CreatePostDTO>({
-		resolver: zodResolver(CreatePostSchema),
-		defaultValues: { title: "", content: "" },
+	const form = useForm<UpdatePostDTO>({
+		resolver: zodResolver(UpdatePostSchema),
+		defaultValues: { title: post.title, content: post.content },
 	});
 
-	async function onSubmit(values: CreatePostDTO) {
+	async function onSubmit(values: UpdatePostDTO) {
 		setLoading(true);
 		setError(null);
 
 		try {
-			await createPost(values);
+			await createPost(values); // ================================= FIXME
 
 			toast.success("Blog created!");
 			onSuccess?.(); // Close the dialog
@@ -62,11 +67,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 						<FormItem>
 							<FormLabel>Title</FormLabel>
 							<FormControl>
-								<Input
-									placeholder="The title of your blog"
-									{...field}
-									disabled={loading}
-								/>
+								<Input {...field} disabled={loading} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -80,7 +81,6 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 							<FormLabel>Content</FormLabel>
 							<FormControl>
 								<Textarea
-									placeholder="Tell people something about your day"
 									{...field}
 									className="resize-none"
 									rows={10}
