@@ -16,12 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { createPost, updatePost } from "@/app/posts/actions";
+import { updatePost } from "@/app/posts/actions";
 import {
 	UpdatePostDTO,
 	UpdatePostSchema,
 } from "@/app/posts/dtos/update-post.dto";
 import { Post } from "@/types/post";
+import { useUpdatePost } from "@/app/hooks/posts/useUpdatePost";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;
@@ -32,29 +33,16 @@ export default function UpdatePostForm({
 	onSuccess,
 	post,
 }: UpdatePostFormProps) {
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
 	const form = useForm<UpdatePostDTO>({
 		resolver: zodResolver(UpdatePostSchema),
 		defaultValues: { title: post.title, content: post.content },
 	});
 
+	const { mutateAsync, isPending } = useUpdatePost();
+
 	async function onSubmit(values: UpdatePostDTO) {
-		setLoading(true);
-		setError(null);
-
-		try {
-			await updatePost(post.id, values);
-
-			toast.success("Blog updated!");
-			onSuccess?.(); // Close the dialog
-		} catch {
-			setError("Failed to create blog. Please try again.");
-			toast.error("Fail to create blog.");
-		} finally {
-			setLoading(false);
-		}
+		await mutateAsync({ id: post.id, data: values });
+		onSuccess?.(); //Close the dialog
 	}
 
 	return (
@@ -67,7 +55,7 @@ export default function UpdatePostForm({
 						<FormItem>
 							<FormLabel>Title</FormLabel>
 							<FormControl>
-								<Input {...field} disabled={loading} />
+								<Input {...field} disabled={isPending} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -84,23 +72,22 @@ export default function UpdatePostForm({
 									{...field}
 									className="resize-none"
 									rows={10}
-									disabled={loading}
+									disabled={isPending}
 								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				{error && <p className="text-destructive text-sm">{error}</p>}
 
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline" disabled={loading}>
+						<Button variant="outline" disabled={isPending}>
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button type="submit" disabled={loading}>
-						{loading ? "Updating..." : "Update"}
+					<Button type="submit" disabled={isPending}>
+						{isPending ? "Updating..." : "Update"}
 					</Button>
 				</DialogFooter>
 			</form>
