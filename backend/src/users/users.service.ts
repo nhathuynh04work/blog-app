@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    UnauthorizedException,
+} from "@nestjs/common";
 import { UsersRepository } from "./users.repository";
 import { CreateUserDTO } from "./dtos/create-user.dto";
 import { UserDTO } from "./dtos/user.dto";
 import { User } from "./entities/user.entity";
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
+import { LoginDTO } from "src/auth/dtos/login.dto";
 
 @Injectable()
 export class UsersService {
@@ -30,5 +35,21 @@ export class UsersService {
 
         const saved = await this.usersRepository.create(user);
         return this.mapUserDto(saved);
+    }
+
+    async authenticate(data: LoginDTO): Promise<UserDTO> {
+        const { email, password } = data;
+
+        const user = await this.usersRepository.findByEmail(email);
+        if (!user)
+            throw new UnauthorizedException(
+                "User with this email does not exist",
+            );
+
+        const isPasswordValid = await compare(password, user.passwordHash);
+        if (!isPasswordValid)
+            throw new UnauthorizedException("Password invalid");
+
+        return this.mapUserDto(user);
     }
 }
