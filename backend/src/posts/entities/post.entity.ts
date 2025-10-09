@@ -1,15 +1,10 @@
-import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    ObjectId,
-    ObjectIdColumn,
-} from "typeorm";
+import { ObjectId } from "mongodb";
+import { Column, CreateDateColumn, Entity, ObjectIdColumn } from "typeorm";
 
 @Entity("posts")
 export class Post {
     @ObjectIdColumn()
-    id: ObjectId;
+    _id: ObjectId;
 
     @Column("varchar", { length: 200 })
     title: string;

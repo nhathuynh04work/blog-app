@@ -11,7 +11,7 @@ import { UpdatePostDTO } from "./dtos/update-post.dto";
 export class PostsRepository {
     constructor(
         @InjectRepository(Post)
-        readonly repo: Repository<Post>,
+        private readonly repo: Repository<Post>,
     ) {}
 
     async findAll() {
