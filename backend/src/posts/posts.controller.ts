@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type CreatePostDTO, CreatePostSchema } from "./dtos/create-post.dto";
@@ -13,16 +21,14 @@ export class PostsController {
 
     @Get()
     async getPosts(): Promise<PostDTO[]> {
-        const posts = await this.postsService.getPosts();
-        return posts;
+        return await this.postsService.getPosts();
     }
 
     @Post()
     async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
     ): Promise<PostDTO> {
-        const newPost = await this.postsService.createPost(data);
-        return newPost;
+        return await this.postsService.createPost(data);
     }
 
     @Patch("/:id")
@@ -30,7 +36,13 @@ export class PostsController {
         @Param("id", ParseObjectIdPipe) id: ObjectId,
         @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
     ): Promise<PostDTO> {
-        const updated = await this.postsService.updatePost(id, data);
-        return updated;
+        return await this.postsService.updatePost(id, data);
+    }
+
+    @Delete("/:id")
+    async deletePost(
+        @Param("id", ParseObjectIdPipe) id: ObjectId,
+    ): Promise<void> {
+        await this.postsService.deletePost(id);
     }
 }

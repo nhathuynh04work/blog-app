@@ -29,10 +29,16 @@ export class PostsService {
 
     async updatePost(id: ObjectId, data: UpdatePostDTO): Promise<PostDTO> {
         const post = await this.postRepository.findById(id);
-
         if (!post) throw new NotFoundException("Post not found");
 
         const updated = await this.postRepository.update(post, data);
         return this.mapPostDTO(updated);
+    }
+
+    async deletePost(id: ObjectId): Promise<void> {
+        const post = await this.postRepository.findById(id);
+        if (!post) throw new NotFoundException("Post not found");
+
+        await this.postRepository.delete(id);
     }
 }
