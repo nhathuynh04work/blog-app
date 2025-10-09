@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { createPost } from "@/app/posts/actions";
+import { createPost, updatePost } from "@/app/posts/actions";
 import {
 	UpdatePostDTO,
 	UpdatePostSchema,
@@ -45,9 +45,9 @@ export default function UpdatePostForm({
 		setError(null);
 
 		try {
-			await createPost(values); // ================================= FIXME
+			await updatePost(post.id, values);
 
-			toast.success("Blog created!");
+			toast.success("Blog updated!");
 			onSuccess?.(); // Close the dialog
 		} catch {
 			setError("Failed to create blog. Please try again.");
@@ -100,7 +100,7 @@ export default function UpdatePostForm({
 						</Button>
 					</DialogClose>
 					<Button type="submit" disabled={loading}>
-						{loading ? "Creating..." : "Create"}
+						{loading ? "Updating..." : "Update"}
 					</Button>
 				</DialogFooter>
 			</form>
