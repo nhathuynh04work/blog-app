@@ -6,6 +6,9 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { envSchema, validate } from "./config/env.validation";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Post } from "./posts/entities/post.entity";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { User } from "./users/entities/user.entity";
 
 @Module({
     imports: [
@@ -23,10 +26,12 @@ import { Post } from "./posts/entities/post.entity";
                 url: configService.get<string>("MONGO_URI"),
                 database: configService.get<string>("DB_NAME"),
                 synchronize: true,
-                entities: [Post],
+                entities: [Post, User],
             }),
         }),
         PostsModule,
+        AuthModule,
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],
