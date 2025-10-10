@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -19,8 +18,6 @@ import {
 } from "@/app/posts/dtos/create-post.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { createPost } from "@/app/posts/actions";
 import { useCreatePost } from "@/app/hooks/posts/useCreatePost";
 
 interface CreatePostFormProps {
