@@ -11,11 +11,13 @@ import { type SignupDTO, SignupSchema } from "./dtos/signup.dto";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { JwtGuard } from "./guards/jwt-auth.guard";
+import { Public } from "src/common/decorators/public.decorator";
 
 @Controller("auth")
 export class AuthController {
     constructor(private authService: AuthService) {}
 
+    @Public()
     @Post("/signup")
     async signup(@Body(new ZodValidationPipe(SignupSchema)) data: SignupDTO) {
         return await this.authService.signup(data);
