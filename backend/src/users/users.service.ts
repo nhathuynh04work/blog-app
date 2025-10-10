@@ -23,10 +23,10 @@ export class UsersService {
     }
 
     async findUserByEmail(email: string): Promise<User | null> {
-        return await this.usersRepository.findOneBy({ email });
+        return this.usersRepository.findOneBy({ email });
     }
 
-    async createUser(data: CreateUserDTO): Promise<UserDTO> {
+    async createUser(data: CreateUserDTO): Promise<User> {
         const { email, password, ...others } = data;
 
         // Check if email existed
@@ -43,7 +43,6 @@ export class UsersService {
             ...others,
         });
 
-        const saved = await this.usersRepository.save(user);
-        return this.mapUserDto(saved);
+        return this.usersRepository.save(user);
     }
 }

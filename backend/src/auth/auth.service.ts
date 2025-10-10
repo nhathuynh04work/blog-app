@@ -10,7 +10,8 @@ export class AuthService {
     constructor(private usersService: UsersService) {}
 
     async signup(data: SignupDTO): Promise<UserDTO> {
-        return await this.usersService.createUser(data);
+        const user = await this.usersService.createUser(data);
+        return this.usersService.mapUserDto(user);
     }
 
     async login(data: LoginDTO): Promise<UserDTO> {
@@ -19,9 +20,8 @@ export class AuthService {
         const user = await this.usersService.findUserByEmail(email);
         if (!user) throw new UnauthorizedException("User not exist");
 
-        const isPasswordValid = await compare(password, user.passwordHash);
-        if (!isPasswordValid)
-            throw new UnauthorizedException("Invalid password");
+        const valid = await compare(password, user.passwordHash);
+        if (!valid) throw new UnauthorizedException("Invalid password");
 
         return this.usersService.mapUserDto(user);
     }
