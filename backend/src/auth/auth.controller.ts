@@ -1,20 +1,37 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Request,
+    UseGuards,
+} from "@nestjs/common";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type SignupDTO, SignupSchema } from "./dtos/signup.dto";
 import { AuthService } from "./auth.service";
-import { LoginSchema, type LoginDTO } from "./dtos/login.dto";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { JwtGuard } from "./guards/jwt-auth.guard";
+import { Public } from "src/common/decorators/public.decorator";
 
 @Controller("auth")
 export class AuthController {
     constructor(private authService: AuthService) {}
 
+    @Public()
     @Post("/signup")
     async signup(@Body(new ZodValidationPipe(SignupSchema)) data: SignupDTO) {
         return await this.authService.signup(data);
     }
 
+    @UseGuards(LocalAuthGuard)
     @Post("/login")
-    async login(@Body(new ZodValidationPipe(LoginSchema)) data: LoginDTO) {
-        return await this.authService.login(data);
+    async login(@Request() req) {
+        return this.authService.login(req.user);
+    }
+
+    @UseGuards(JwtGuard)
+    @Get("/profile")
+    getProfile(@Request() req) {
+        return req.user;
     }
 }
