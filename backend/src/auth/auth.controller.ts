@@ -3,15 +3,14 @@ import {
     Controller,
     Get,
     Post,
-    Req,
     Request,
     UseGuards,
 } from "@nestjs/common";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type SignupDTO, SignupSchema } from "./dtos/signup.dto";
 import { AuthService } from "./auth.service";
-import { LocalAuthGuard } from "./local-auth.guard";
-import { JwtGuard } from "./jwt-auth.guard";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
+import { JwtGuard } from "./guards/jwt-auth.guard";
 
 @Controller("auth")
 export class AuthController {
