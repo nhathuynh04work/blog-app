@@ -14,14 +14,12 @@ export class AuthService {
         return this.usersService.mapUserDto(user);
     }
 
-    async login(data: LoginDTO): Promise<UserDTO> {
+    async validateUser(data: LoginDTO): Promise<UserDTO> {
         const { email, password } = data;
 
         const user = await this.usersService.findUserByEmail(email);
-        if (!user) throw new UnauthorizedException("User not exist");
-
-        const valid = await compare(password, user.passwordHash);
-        if (!valid) throw new UnauthorizedException("Invalid password");
+        if (!user || user.passwordHash !== password)
+            throw new UnauthorizedException();
 
         return this.usersService.mapUserDto(user);
     }

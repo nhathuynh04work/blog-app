@@ -1,8 +1,8 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, Request, UseGuards } from "@nestjs/common";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type SignupDTO, SignupSchema } from "./dtos/signup.dto";
 import { AuthService } from "./auth.service";
-import { LoginSchema, type LoginDTO } from "./dtos/login.dto";
+import { LocalAuthGuard } from "./local-auth.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -13,8 +13,9 @@ export class AuthController {
         return await this.authService.signup(data);
     }
 
+    @UseGuards(LocalAuthGuard)
     @Post("/login")
-    async login(@Body(new ZodValidationPipe(LoginSchema)) data: LoginDTO) {
-        return await this.authService.login(data);
+    async login(@Request() req) {
+        return req.user;
     }
 }
