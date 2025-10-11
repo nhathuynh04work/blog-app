@@ -17,7 +17,6 @@ import { ACCESS_TOKEN_KEY } from "./constants";
 import type { Request, Response } from "express";
 import { UserDTO } from "src/users/dtos/user.dto";
 import { cookieConfig } from "src/config/cookie";
-import { success } from "zod";
 
 @Controller("auth")
 export class AuthController {
@@ -38,6 +37,7 @@ export class AuthController {
     ) {
         const token = await this.authService.login(req.user as UserDTO);
         res.cookie(ACCESS_TOKEN_KEY, token, cookieConfig);
+        console.log(token);
 
         return { success: true };
     }

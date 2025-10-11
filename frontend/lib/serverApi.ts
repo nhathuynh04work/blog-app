@@ -10,26 +10,38 @@ const serverApi = axios.create({
 	},
 });
 
-// Request interceptor to forward cookies
-serverApi.interceptors.request.use(async (config) => {
-	try {
-		const cookieStore = await cookies();
-		const cookieHeader = cookieStore.toString();
-		if (cookieHeader) {
-			config.headers = config.headers || {};
-			config.headers.Cookie = cookieHeader;
-		}
-	} catch (err) {
-		console.log(err);
-	}
-	return config;
-});
+export async function serverApiGet(url: string) {
+	const cookieHeader = await cookies();
+	return serverApi.get(url, {
+		headers: { Cookie: cookieHeader.toString() },
+	});
+}
+
+export async function serverApiPost(url: string, data: unknown) {
+	const cookieHeader = await cookies();
+	return serverApi.post(url, data, {
+		headers: { Cookie: cookieHeader.toString() },
+	});
+}
+
+export async function serverApiPatch(url: string, data: unknown) {
+	const cookieHeader = await cookies();
+	return serverApi.patch(url, data, {
+		headers: { Cookie: cookieHeader.toString() },
+	});
+}
+
+export async function serverApiDelete(url: string) {
+	const cookieHeader = await cookies();
+	return serverApi.delete(url, {
+		headers: { Cookie: cookieHeader.toString() },
+	});
+}
 
 // Res interceptors
 serverApi.interceptors.response.use(
 	(response) => response,
 	(error) => {
-		console.log(error);
 		console.error("API Error:", error.response?.data || error.message);
 		return Promise.reject(error);
 	}
