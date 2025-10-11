@@ -14,15 +14,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Post } from "@/types/post";
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 import {
 	UpdatePostDTO,
 	UpdatePostSchema,
-} from "@/app/posts/dtos/update-post.dto";
-import { Post } from "@/types/post";
-import { useUpdatePost } from "@/app/hooks/posts/useUpdatePost";
-import { useDeletePost } from "@/app/hooks/posts/useDeletePost";
-import { useTransition } from "react";
-import { Loader2 } from "lucide-react";
+} from "@/app/(protected)/posts/dtos/update-post.dto";
+import { useUpdatePost } from "@/app/(protected)/posts/hooks/useUpdatePost";
+import { useDeletePost } from "@/app/(protected)/posts/hooks/useDeletePost";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;

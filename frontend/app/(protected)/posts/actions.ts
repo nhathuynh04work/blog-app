@@ -1,18 +1,18 @@
 "use server";
 
-import api from "@/lib/axios";
-import { CreatePostDTO } from "@/app/posts/dtos/create-post.dto";
 import { Post } from "@/types/post";
 import { revalidatePath } from "next/cache";
 import { UpdatePostDTO } from "./dtos/update-post.dto";
+import { CreatePostDTO } from "./dtos/create-post.dto";
+import serverApi from "@/lib/serverApi";
 
-export async function getPosts(): Promise<Post[]> {
-	const res = await api.get("/posts");
-	return res.data;
+export async function getPosts() {
+	const { data } = await serverApi.get("/posts");
+	return data;
 }
 
 export async function createPost(data: CreatePostDTO): Promise<Post> {
-	const res = await api.post("/posts", data);
+	const res = await serverApi.post("/posts", data);
 	revalidatePath("/posts");
 	return res.data;
 }
@@ -21,12 +21,12 @@ export async function updatePost(
 	id: string,
 	data: UpdatePostDTO
 ): Promise<Post> {
-	const res = await api.patch(`/posts/${id}`, data);
+	const res = await serverApi.patch(`/posts/${id}`, data);
 	revalidatePath("/posts");
 	return res.data;
 }
 
 export async function deletePost(id: string): Promise<void> {
-	await api.delete(`posts/${id}`);
+	await serverApi.delete(`posts/${id}`);
 	revalidatePath("/posts");
 }

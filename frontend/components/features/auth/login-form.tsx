@@ -16,18 +16,22 @@ import Link from "next/link";
 import { LoginDTO, LoginSchema } from "@/app/auth/dtos/login.dto";
 import { login } from "@/app/auth/login/actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
 	const form = useForm<LoginDTO>({
 		resolver: zodResolver(LoginSchema),
 		defaultValues: { email: "", password: "" },
 	});
+	const router = useRouter();
 
 	async function onSubmit(values: LoginDTO) {
 		try {
-			const res = await login(values);
+			await login(values);
 			toast.success("Login successfully!");
+			router.push("/posts");
 		} catch (err) {
+			console.log(err);
 			toast.error("Failed to log you in.");
 		}
 	}
