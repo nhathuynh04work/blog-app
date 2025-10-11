@@ -1,9 +1,9 @@
 "use client";
 
-import { updatePost } from "@/app/posts/actions";
-import { UpdatePostDTO } from "@/app/posts/dtos/update-post.dto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { UpdatePostDTO } from "../dtos/update-post.dto";
+import { updatePost } from "../actions";
 
 export function useUpdatePost() {
 	const queryClient = useQueryClient();

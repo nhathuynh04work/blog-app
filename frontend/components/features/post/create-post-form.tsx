@@ -1,5 +1,10 @@
 "use client";
 
+import {
+	CreatePostDTO,
+	CreatePostSchema,
+} from "@/app/(protected)/posts/dtos/create-post.dto";
+import { useCreatePost } from "@/app/(protected)/posts/hooks/useCreatePost";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -12,13 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-	CreatePostDTO,
-	CreatePostSchema,
-} from "@/app/posts/dtos/create-post.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useCreatePost } from "@/app/hooks/posts/useCreatePost";
 
 interface CreatePostFormProps {
 	onSuccess?: () => void;
