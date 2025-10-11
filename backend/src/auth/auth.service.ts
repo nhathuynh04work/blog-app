@@ -31,8 +31,8 @@ export class AuthService {
         return this.usersService.mapUserDto(user);
     }
 
-    async login(user: UserDTO) {
+    async login(user: UserDTO): Promise<string> {
         const payload: JwtPayloadDTO = { sub: user.id, email: user.email };
-        return { access_token: this.jwtService.sign(payload) };
+        return this.jwtService.sign(payload);
     }
 }

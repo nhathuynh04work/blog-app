@@ -15,7 +15,7 @@ async function bootstrap() {
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     });
 
-    app.use(cookieParser());
+    app.use(cookieParser()); // FIXME: add a secret in here
 
     const port = config.get<number>("PORT") || 4000;
     await app.listen(port);
