@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Req,
+    Res,
+    UseGuards,
+} from "@nestjs/common";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type SignupDTO, SignupSchema } from "./dtos/signup.dto";
 import { AuthService } from "./auth.service";
@@ -25,5 +33,10 @@ export class AuthController {
         res.cookie(ACCESS_TOKEN_KEY, token, cookieConfig);
 
         return { success: true };
+    }
+
+    @Get("/logout")
+    async logout(@Res({ passthrough: true }) res) {
+        res.clearCookie(ACCESS_TOKEN_KEY);
     }
 }
