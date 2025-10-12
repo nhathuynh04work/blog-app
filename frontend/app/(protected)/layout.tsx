@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN_KEY } from "@/lib/constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import AuthProvider from "../providers/auth-provider";
 
 export default async function ProtectedLayout({
 	children,
@@ -14,5 +15,5 @@ export default async function ProtectedLayout({
 		redirect("/auth/login");
 	}
 
-	return <>{children}</>;
+	return <AuthProvider>{children}</AuthProvider>;
 }
