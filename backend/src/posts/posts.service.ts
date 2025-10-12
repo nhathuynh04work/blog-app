@@ -33,8 +33,11 @@ export class PostsService {
         return posts.map((post) => this.mapPostDTO(post));
     }
 
-    async createPost(data: CreatePostDTO): Promise<PostDTO> {
-        const newPost = this.postsRepository.create(data);
+    async createPost(data: CreatePostDTO, userId: string): Promise<PostDTO> {
+        const newPost = this.postsRepository.create({
+            ...data,
+            userId: new ObjectId(userId),
+        });
         const saved = await this.postsRepository.save(newPost);
         return this.mapPostDTO(saved);
     }

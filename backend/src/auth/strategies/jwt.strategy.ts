@@ -6,6 +6,7 @@ import { JwtPayloadDTO } from "../dtos/jwt-payload.dto";
 import { Request } from "express";
 import { ACCESS_TOKEN_KEY } from "../constants";
 import { UsersService } from "src/users/users.service";
+import { UserDTO } from "src/users/dtos/user.dto";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: JwtPayloadDTO) {
+    async validate(payload: JwtPayloadDTO): Promise<UserDTO> {
         const user = await this.usersService.findUserByEmail(payload.email);
         if (!user) throw new UnauthorizedException();
 

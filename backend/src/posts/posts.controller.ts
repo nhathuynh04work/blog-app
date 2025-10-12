@@ -5,6 +5,7 @@ import {
     Param,
     Patch,
     Post,
+    Req,
 } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
@@ -21,8 +22,9 @@ export class PostsController {
     @Post()
     async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
+        @Req() req,
     ): Promise<PostDTO> {
-        return await this.postsService.createPost(data);
+        return this.postsService.createPost(data, req.user.id);
     }
 
     @Patch("/:id")
