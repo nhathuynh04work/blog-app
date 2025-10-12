@@ -2,7 +2,6 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
     Param,
     Patch,
     Post,
@@ -18,11 +17,6 @@ import { ObjectId } from "mongodb";
 @Controller("posts")
 export class PostsController {
     constructor(private postsService: PostsService) {}
-
-    @Get()
-    async getPosts(): Promise<PostDTO[]> {
-        return await this.postsService.getPosts();
-    }
 
     @Post()
     async createPost(

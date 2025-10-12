@@ -12,7 +12,7 @@ import {
 } from "@/lib/serverApi";
 
 export async function getPosts() {
-	const { data } = await serverApiGet("/posts");
+	const { data } = await serverApiGet("users/me/posts");
 	return data;
 }
 

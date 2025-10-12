@@ -5,6 +5,9 @@ import { User } from "./entities/user.entity";
 import { hash } from "bcrypt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { PostsService } from "src/posts/posts.service";
+import { PostDTO } from "src/posts/dtos/post.dto";
+import { ObjectId } from "mongodb";
 
 @Injectable()
 export class UsersService {
@@ -20,6 +23,10 @@ export class UsersService {
             lastName: user.lastName,
             email: user.email,
         };
+    }
+
+    async findUserById(id: string): Promise<User | null> {
+        return this.usersRepository.findOneBy({ _id: new ObjectId(id) });
     }
 
     async findUserByEmail(email: string): Promise<User | null> {
