@@ -3,10 +3,11 @@
 import { useAuth } from "@/app/providers/auth-provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Feather } from "lucide-react";
+import { Feather, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function TopBar() {
-	const { user, loading } = useAuth();
+	const { user, loading, logout } = useAuth();
 
 	return (
 		<div className="flex items-center justify-between w-full px-4 py-3 border-b">
@@ -36,6 +37,14 @@ export default function TopBar() {
 						<span className="text-sm font-medium">
 							{user?.firstName} {user?.lastName}
 						</span>
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={logout || undefined}
+							className="flex items-center gap-1 text-muted-foreground hover:text-destructive">
+							<LogOut className="h-4 w-4" />
+							<span>Logout</span>
+						</Button>
 					</>
 				)}
 			</div>
