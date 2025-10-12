@@ -32,13 +32,13 @@ export class PostsController {
         @Param("id", ParseObjectIdPipe) id: ObjectId,
         @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
     ): Promise<PostDTO> {
-        return await this.postsService.updatePost(id, data);
+        return this.postsService.updatePost(id, data);
     }
 
     @Delete("/:id")
     async deletePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
     ): Promise<void> {
-        await this.postsService.deletePost(id);
+        this.postsService.deletePost(id);
     }
 }
