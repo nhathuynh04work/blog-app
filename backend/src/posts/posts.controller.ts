@@ -2,10 +2,10 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
     Param,
     Patch,
     Post,
+    Req,
 } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
@@ -19,16 +19,12 @@ import { ObjectId } from "mongodb";
 export class PostsController {
     constructor(private postsService: PostsService) {}
 
-    @Get()
-    async getPosts(): Promise<PostDTO[]> {
-        return await this.postsService.getPosts();
-    }
-
     @Post()
     async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
+        @Req() req,
     ): Promise<PostDTO> {
-        return await this.postsService.createPost(data);
+        return this.postsService.createPost(data, req.user.id);
     }
 
     @Patch("/:id")
@@ -36,13 +32,13 @@ export class PostsController {
         @Param("id", ParseObjectIdPipe) id: ObjectId,
         @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
     ): Promise<PostDTO> {
-        return await this.postsService.updatePost(id, data);
+        return this.postsService.updatePost(id, data);
     }
 
     @Delete("/:id")
     async deletePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
     ): Promise<void> {
-        await this.postsService.deletePost(id);
+        this.postsService.deletePost(id);
     }
 }

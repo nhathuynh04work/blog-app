@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { ReactNode } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { usePathname } from "next/navigation";

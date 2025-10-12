@@ -8,11 +8,6 @@ const clientApi = axios.create({
 	},
 });
 
-// Request interceptor to forward cookies
-clientApi.interceptors.request.use((config) => {
-	return config;
-});
-
 // Res interceptors
 clientApi.interceptors.response.use(
 	(response) => response,

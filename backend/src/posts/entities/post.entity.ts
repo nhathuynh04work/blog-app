@@ -6,12 +6,15 @@ export class Post {
     @ObjectIdColumn()
     _id: ObjectId;
 
-    @Column("varchar", { length: 200 })
+    @Column()
     title: string;
 
-    @Column("text")
+    @Column()
     content: string;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @Column()
+    userId: ObjectId;
 }
