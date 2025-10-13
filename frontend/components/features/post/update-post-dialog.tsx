@@ -25,9 +25,7 @@ export default function UpdatePostDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<button className="w-full text-left">{children}</button>
-			</DialogTrigger>
+			<DialogTrigger asChild>{children}</DialogTrigger>
 
 			<DialogContent>
 				<DialogHeader>

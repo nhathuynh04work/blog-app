@@ -9,6 +9,7 @@ import { Post } from "./posts/entities/post.entity";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/entities/user.entity";
+import { Like } from "./posts/entities/like.entity";
 
 @Module({
     imports: [
@@ -26,7 +27,7 @@ import { User } from "./users/entities/user.entity";
                 url: configService.get<string>("MONGO_URI"),
                 database: configService.get<string>("DB_NAME"),
                 synchronize: true,
-                entities: [Post, User],
+                entities: [Post, User, Like],
             }),
         }),
         PostsModule,
