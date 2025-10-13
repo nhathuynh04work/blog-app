@@ -49,4 +49,12 @@ export class PostsController {
     ): Promise<void> {
         this.postsService.deletePost(id, req.user.id);
     }
+
+    @Post("/:id/likes")
+    async likePost(
+        @Param("id", ParseObjectIdPipe) postId: ObjectId,
+        @Req() req,
+    ): Promise<void> {
+        await this.postsService.likePost(new ObjectId(req.user.id), postId);
+    }
 }

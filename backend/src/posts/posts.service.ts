@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     ForbiddenException,
     Injectable,
     NotFoundException,
@@ -11,12 +12,15 @@ import { ObjectId } from "mongodb";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserDTO } from "src/users/dtos/user.dto";
+import { Like } from "./entities/like.entity";
 
 @Injectable()
 export class PostsService {
     constructor(
         @InjectRepository(Post)
         private readonly postsRepository: Repository<Post>,
+        @InjectRepository(Like)
+        private readonly likesRepository: Repository<Like>,
     ) {}
 
     private mapPostDTO(post: Post): PostDTO {
@@ -79,5 +83,17 @@ export class PostsService {
             throw new ForbiddenException("Cannot delete this post");
 
         await this.postsRepository.delete({ _id: id });
+    }
+
+    async likePost(userId: ObjectId, postId: ObjectId): Promise<void> {
+        try {
+            const like = this.likesRepository.create({ userId, postId });
+            await this.likesRepository.save(like);
+        } catch (err) {
+            if (err.code === 11000)
+                throw new ConflictException("Already liked");
+
+            throw err;
+        }
     }
 }
