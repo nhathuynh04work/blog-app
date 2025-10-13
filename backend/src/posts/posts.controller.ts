@@ -1,24 +1,52 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Req,
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
-import type { Post as PostInterface } from "./interfaces/post.interface";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type CreatePostDTO, CreatePostSchema } from "./dtos/create-post.dto";
+import { PostDTO } from "./dtos/post.dto";
+import { UpdatePostSchema, type UpdatePostDTO } from "./dtos/update-post.dto";
+import { ParseObjectIdPipe } from "src/common/pipes/parse-object-id.pipe";
+import { ObjectId } from "mongodb";
 
 @Controller("posts")
 export class PostsController {
     constructor(private postsService: PostsService) {}
 
     @Get()
-    getPosts(): PostInterface[] {
-        const posts: PostInterface[] = this.postsService.getPosts();
-        return posts;
+    async getPosts() {
+        return this.postsService.getPosts();
     }
 
     @Post()
-    createPost(
+    async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
-    ): PostInterface {
-        const newPost = this.postsService.createPost(data);
-        return newPost;
+        @Req() req,
+    ): Promise<PostDTO> {
+        return this.postsService.createPost(data, req.user);
+    }
+
+    @Patch("/:id")
+    async updatePost(
+        @Param("id", ParseObjectIdPipe) id: ObjectId,
+        @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
+        @Req() req,
+    ): Promise<PostDTO> {
+        return this.postsService.updatePost(id, data, req.user.id);
+    }
+
+    @Delete("/:id")
+    async deletePost(
+        @Param("id", ParseObjectIdPipe) id: ObjectId,
+        @Req() req,
+    ): Promise<void> {
+        this.postsService.deletePost(id, req.user.id);
     }
 }

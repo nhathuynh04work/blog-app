@@ -1,9 +1,10 @@
 "use client";
 
 import { Post } from "@/types/post";
-import BlogCard from "./post-card";
+import UpdatePostDialog from "./update-post-dialog";
+import PostCard from "./post-card";
 
-export default function BlogList({ posts }: { posts: Post[] }) {
+export default function PostList({ posts }: { posts: Post[] }) {
 	if (!posts.length)
 		return (
 			<p className="text-muted-foreground text-sm">No posts available.</p>
@@ -11,8 +12,10 @@ export default function BlogList({ posts }: { posts: Post[] }) {
 
 	return (
 		<div className="flex flex-col gap-4">
-			{posts.map((blog) => (
-				<BlogCard key={blog.id} blog={blog} />
+			{posts.map((post) => (
+				<UpdatePostDialog key={post.id} post={post}>
+					<PostCard post={post} />
+				</UpdatePostDialog>
 			))}
 		</div>
 	);

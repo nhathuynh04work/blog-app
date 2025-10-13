@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import {
+	CreatePostDTO,
+	CreatePostSchema,
+} from "@/app/(protected)/posts/dtos/create-post.dto";
+import { useCreatePost } from "@/app/(protected)/posts/hooks/useCreatePost";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -13,41 +17,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CreatePostDTO, CreatePostSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { createPost } from "@/app/posts/actions";
 
 interface CreatePostFormProps {
 	onSuccess?: () => void;
 }
 
 export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
 	const form = useForm<CreatePostDTO>({
 		resolver: zodResolver(CreatePostSchema),
 		defaultValues: { title: "", content: "" },
 	});
 
+	const { mutateAsync, isPending } = useCreatePost();
+
 	async function onSubmit(values: CreatePostDTO) {
-		setLoading(true);
-		setError(null);
-
-		try {
-			const newPost = await createPost(values);
-			console.log(newPost);
-
-			toast.success("Blog created!");
-			onSuccess?.(); // Close the dialog
-		} catch {
-			setError("Failed to create blog. Please try again.");
-			toast.error("Fail to create blog.");
-		} finally {
-			setLoading(false);
-		}
+		await mutateAsync(values);
+		onSuccess?.(); //Close the dialog
 	}
 
 	return (
@@ -63,7 +50,7 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 								<Input
 									placeholder="The title of your blog"
 									{...field}
-									disabled={loading}
+									disabled={isPending}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -82,23 +69,22 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 									{...field}
 									className="resize-none"
 									rows={10}
-									disabled={loading}
+									disabled={isPending}
 								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
-				{error && <p className="text-destructive text-sm">{error}</p>}
 
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline" disabled={loading}>
+						<Button variant="outline" disabled={isPending}>
 							Cancel
 						</Button>
 					</DialogClose>
-					<Button type="submit" disabled={loading}>
-						{loading ? "Creating..." : "Create"}
+					<Button type="submit" disabled={isPending}>
+						{isPending ? "Creating..." : "Create"}
 					</Button>
 				</DialogFooter>
 			</form>
