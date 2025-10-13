@@ -6,6 +6,7 @@ import { UpdatePostDTO } from "./dtos/update-post.dto";
 import { ObjectId } from "mongodb";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { UserDTO } from "src/users/dtos/user.dto";
 
 @Injectable()
 export class PostsService {
@@ -23,6 +24,11 @@ export class PostsService {
         };
     }
 
+    async getPosts(): Promise<PostDTO[]> {
+        const posts = await this.postsRepository.find();
+        return posts.map((post) => this.mapPostDTO(post));
+    }
+
     async getPostsByUserId(userId: string): Promise<PostDTO[]> {
         const posts = await this.postsRepository.find({
             where: {
@@ -33,10 +39,11 @@ export class PostsService {
         return posts.map((post) => this.mapPostDTO(post));
     }
 
-    async createPost(data: CreatePostDTO, userId: string): Promise<PostDTO> {
+    async createPost(data: CreatePostDTO, user: UserDTO): Promise<PostDTO> {
         const newPost = this.postsRepository.create({
             ...data,
-            userId: new ObjectId(userId),
+            userId: new ObjectId(user.id),
+            author: `${user.firstName} ${user.lastName}`,
         });
         const saved = await this.postsRepository.save(newPost);
         return this.mapPostDTO(saved);
