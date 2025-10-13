@@ -37,14 +37,16 @@ export class PostsController {
     async updatePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
         @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
+        @Req() req,
     ): Promise<PostDTO> {
-        return this.postsService.updatePost(id, data);
+        return this.postsService.updatePost(id, data, req.user.id);
     }
 
     @Delete("/:id")
     async deletePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
+        @Req() req,
     ): Promise<void> {
-        this.postsService.deletePost(id);
+        this.postsService.deletePost(id, req.user.id);
     }
 }

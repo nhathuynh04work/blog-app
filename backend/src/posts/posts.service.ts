@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { Post } from "./entities/post.entity";
 import { CreatePostDTO } from "./dtos/create-post.dto";
 import { PostDTO } from "./dtos/post.dto";
@@ -51,18 +55,28 @@ export class PostsService {
         return this.mapPostDTO(saved);
     }
 
-    async updatePost(id: ObjectId, data: UpdatePostDTO): Promise<PostDTO> {
+    async updatePost(
+        id: ObjectId,
+        data: UpdatePostDTO,
+        userId: string,
+    ): Promise<PostDTO> {
         const post = await this.postsRepository.findOneBy({ _id: id });
         if (!post) throw new NotFoundException("Post not found");
+
+        if (!post.userId.equals(new ObjectId(userId)))
+            throw new ForbiddenException("Cannot edit this post");
 
         Object.assign(post, data);
-        await this.postsRepository.save(post);
-        return this.mapPostDTO(post);
+        const saved = await this.postsRepository.save(post);
+        return this.mapPostDTO(saved);
     }
 
-    async deletePost(id: ObjectId): Promise<void> {
+    async deletePost(id: ObjectId, userId: string): Promise<void> {
         const post = await this.postsRepository.findOneBy({ _id: id });
         if (!post) throw new NotFoundException("Post not found");
+
+        if (!post.userId.equals(new ObjectId(userId)))
+            throw new ForbiddenException("Cannot delete this post");
 
         await this.postsRepository.delete({ _id: id });
     }
