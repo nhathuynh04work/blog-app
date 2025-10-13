@@ -10,7 +10,7 @@ import { PostDTO } from "./dtos/post.dto";
 import { UpdatePostDTO } from "./dtos/update-post.dto";
 import { ObjectId } from "mongodb";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { MongoRepository } from "typeorm";
 import { UserDTO } from "src/users/dtos/user.dto";
 import { Like } from "./entities/like.entity";
 
@@ -18,9 +18,9 @@ import { Like } from "./entities/like.entity";
 export class PostsService {
     constructor(
         @InjectRepository(Post)
-        private readonly postsRepository: Repository<Post>,
+        private readonly postsRepository: MongoRepository<Post>,
         @InjectRepository(Like)
-        private readonly likesRepository: Repository<Like>,
+        private readonly likesRepository: MongoRepository<Like>,
     ) {}
 
     private mapPostDTO(post: Post): PostDTO {
@@ -47,6 +47,45 @@ export class PostsService {
         });
 
         return posts.map((post) => this.mapPostDTO(post));
+    }
+
+    async getPostsWithLikes(currentUserId: string): Promise<any[]> {
+        const posts = await this.postsRepository
+            .aggregate([
+                {
+                    $lookup: {
+                        from: "likes",
+                        localField: "_id",
+                        foreignField: "postId",
+                        as: "likes",
+                    },
+                },
+                {
+                    $addFields: {
+                        likeCount: { $size: "$likes" },
+                        likedByCurrentUser: {
+                            $in: [new ObjectId(currentUserId), "$likes.userId"],
+                        },
+                    },
+                },
+                {
+                    $project: {
+                        likes: 0,
+                    },
+                },
+            ])
+            .toArray();
+
+        return posts.map((p) => ({
+            id: p._id.toString(),
+            title: p.title,
+            content: p.content,
+            author: p.author,
+            userId: p.userId.toString(),
+            createdAt: p.createdAt,
+            likeCount: p.likeCount,
+            likedByCurrentUser: p.likedByCurrentUser,
+        }));
     }
 
     async createPost(data: CreatePostDTO, user: UserDTO): Promise<PostDTO> {
