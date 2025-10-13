@@ -21,8 +21,8 @@ export class PostsController {
     constructor(private postsService: PostsService) {}
 
     @Get()
-    async getPosts() {
-        return this.postsService.getPosts();
+    async getPosts(@Req() req) {
+        return this.postsService.getPostsWithLikes(req.user.id);
     }
 
     @Post()
@@ -48,5 +48,13 @@ export class PostsController {
         @Req() req,
     ): Promise<void> {
         this.postsService.deletePost(id, req.user.id);
+    }
+
+    @Post("/:id/likes")
+    async likePost(
+        @Param("id", ParseObjectIdPipe) postId: ObjectId,
+        @Req() req,
+    ): Promise<void> {
+        await this.postsService.likePost(new ObjectId(req.user.id), postId);
     }
 }

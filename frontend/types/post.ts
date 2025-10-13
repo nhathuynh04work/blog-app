@@ -5,4 +5,6 @@ export interface Post {
 	createdAt: Date;
 	userId: string;
 	author: string;
+	likeCount: number;
+	likedByCurrentUser: boolean;
 }
