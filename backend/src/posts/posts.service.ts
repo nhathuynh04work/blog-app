@@ -135,4 +135,11 @@ export class PostsService {
             throw err;
         }
     }
+
+    async unlikePost(userId: ObjectId, postId: ObjectId): Promise<void> {
+        await this.likesRepository.delete({
+            userId,
+            postId,
+        });
+    }
 }

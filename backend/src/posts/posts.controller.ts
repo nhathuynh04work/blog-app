@@ -57,4 +57,12 @@ export class PostsController {
     ): Promise<void> {
         await this.postsService.likePost(new ObjectId(req.user.id), postId);
     }
+
+    @Delete("/:id/likes")
+    async unlikePost(
+        @Param("id", ParseObjectIdPipe) postId: ObjectId,
+        @Req() req,
+    ): Promise<void> {
+        await this.postsService.unlikePost(new ObjectId(req.user.id), postId);
+    }
 }
