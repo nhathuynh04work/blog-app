@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     Patch,
     Post,
@@ -19,26 +20,33 @@ import { ObjectId } from "mongodb";
 export class PostsController {
     constructor(private postsService: PostsService) {}
 
+    @Get()
+    async getPosts() {
+        return this.postsService.getPosts();
+    }
+
     @Post()
     async createPost(
         @Body(new ZodValidationPipe(CreatePostSchema)) data: CreatePostDTO,
         @Req() req,
     ): Promise<PostDTO> {
-        return this.postsService.createPost(data, req.user.id);
+        return this.postsService.createPost(data, req.user);
     }
 
     @Patch("/:id")
     async updatePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
         @Body(new ZodValidationPipe(UpdatePostSchema)) data: UpdatePostDTO,
+        @Req() req,
     ): Promise<PostDTO> {
-        return this.postsService.updatePost(id, data);
+        return this.postsService.updatePost(id, data, req.user.id);
     }
 
     @Delete("/:id")
     async deletePost(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
+        @Req() req,
     ): Promise<void> {
-        this.postsService.deletePost(id);
+        this.postsService.deletePost(id, req.user.id);
     }
 }

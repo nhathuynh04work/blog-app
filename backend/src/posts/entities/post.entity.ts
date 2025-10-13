@@ -17,4 +17,7 @@ export class Post {
 
     @Column()
     userId: ObjectId;
+
+    @Column()
+    author: string;
 }
