@@ -14,26 +14,13 @@ import { getNameInitials } from "@/lib/format";
 import { useAuth } from "@/app/providers/auth-provider";
 import UpdatePostDialog from "./update-post-dialog";
 import { Button } from "@/components/ui/button";
-import { Edit, Heart } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import clientApi from "@/lib/clientApi";
-import { toast } from "sonner";
+import LikeButton from "./like-button";
 
 export default function PostCard({ post }: { post: Post }) {
 	const initials = getNameInitials(post.author);
 	const { user } = useAuth();
-
-	console.log(post);
-	console.log(post.likeCount);
-
-	async function likePost() {
-		try {
-			await clientApi.post(`/posts/${post.id}/likes`);
-			toast.success("Liked");
-		} catch {
-			toast.error("Fail to like post");
-		}
-	}
 
 	return (
 		<Card className="transition-shadow hover:shadow-lg rounded-2xl border border-muted/30">
@@ -68,21 +55,7 @@ export default function PostCard({ post }: { post: Post }) {
 			<Separator orientation="horizontal" />
 
 			<CardFooter className="flex justify-between items-center px-4">
-				<Button
-					size="sm"
-					variant="ghost"
-					className="flex items-center gap-1 text-muted-foreground"
-					onClick={likePost}>
-					<Heart
-						className={`w-4 h-4 ${
-							post.likedByCurrentUser
-								? "fill-red-400 text-red-400"
-								: ""
-						}`}
-					/>
-
-					<span>{post.likeCount}</span>
-				</Button>
+				<LikeButton post={post} />
 
 				{user?.id === post.userId && (
 					<UpdatePostDialog post={post}>
