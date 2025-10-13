@@ -23,6 +23,9 @@ export default function PostCard({ post }: { post: Post }) {
 	const initials = getNameInitials(post.author);
 	const { user } = useAuth();
 
+	console.log(post);
+	console.log(post.likeCount);
+
 	async function likePost() {
 		try {
 			await clientApi.post(`/posts/${post.id}/likes`);
@@ -65,14 +68,20 @@ export default function PostCard({ post }: { post: Post }) {
 			<Separator orientation="horizontal" />
 
 			<CardFooter className="flex justify-between items-center px-4">
-				{/* Like button placeholder */}
 				<Button
 					size="sm"
 					variant="ghost"
 					className="flex items-center gap-1 text-muted-foreground"
 					onClick={likePost}>
-					<Heart className="w-4 h-4" />
-					<span>Like</span>
+					<Heart
+						className={`w-4 h-4 ${
+							post.likedByCurrentUser
+								? "fill-red-400 text-red-400"
+								: ""
+						}`}
+					/>
+
+					<span>{post.likeCount}</span>
 				</Button>
 
 				{user?.id === post.userId && (
