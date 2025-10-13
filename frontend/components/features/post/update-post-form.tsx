@@ -23,6 +23,7 @@ import {
 } from "@/app/(protected)/posts/dtos/update-post.dto";
 import { useUpdatePost } from "@/app/(protected)/posts/hooks/useUpdatePost";
 import { useDeletePost } from "@/app/(protected)/posts/hooks/useDeletePost";
+import { useAuth } from "@/app/providers/auth-provider";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;
@@ -41,18 +42,23 @@ export default function UpdatePostForm({
 	const [isPending, startTransition] = useTransition();
 	const { mutateAsync: updatePost } = useUpdatePost();
 	const { mutateAsync: deletePost } = useDeletePost();
+	const { user } = useAuth();
+
+	const isOwner = user?.id === post.userId;
 
 	function onSubmit(values: UpdatePostDTO) {
+		if (!isOwner) return;
 		startTransition(async () => {
 			await updatePost({ id: post.id, data: values });
-			onSuccess?.(); // close dialog
+			onSuccess?.(); // close the dialog
 		});
 	}
 
 	function onDelete() {
+		if (!isOwner) return;
 		startTransition(async () => {
 			await deletePost(post.id);
-			onSuccess?.(); // close dialog
+			onSuccess?.(); // close the dialog
 		});
 	}
 
@@ -66,7 +72,10 @@ export default function UpdatePostForm({
 						<FormItem>
 							<FormLabel>Title</FormLabel>
 							<FormControl>
-								<Input {...field} disabled={isPending} />
+								<Input
+									{...field}
+									disabled={!isOwner || isPending}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -84,7 +93,7 @@ export default function UpdatePostForm({
 									{...field}
 									className="resize-none"
 									rows={10}
-									disabled={isPending}
+									disabled={!isOwner || isPending}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -92,28 +101,30 @@ export default function UpdatePostForm({
 					)}
 				/>
 
-				<DialogFooter>
-					<DialogClose asChild>
-						<Button
-							variant="outline"
-							disabled={isPending}
-							onClick={onDelete}>
+				{isOwner && (
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button
+								variant="outline"
+								disabled={isPending}
+								onClick={onDelete}>
+								{isPending ? (
+									<Loader2 className="h-4 w-4 animate-spin" />
+								) : (
+									"Delete"
+								)}
+							</Button>
+						</DialogClose>
+
+						<Button type="submit" disabled={isPending}>
 							{isPending ? (
 								<Loader2 className="h-4 w-4 animate-spin" />
 							) : (
-								"Delete"
+								"Update"
 							)}
 						</Button>
-					</DialogClose>
-
-					<Button type="submit" disabled={isPending}>
-						{isPending ? (
-							<Loader2 className="h-4 w-4 animate-spin" />
-						) : (
-							"Update"
-						)}
-					</Button>
-				</DialogFooter>
+					</DialogFooter>
+				)}
 			</form>
 		</Form>
 	);

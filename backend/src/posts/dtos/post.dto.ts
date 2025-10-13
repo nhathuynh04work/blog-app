@@ -3,4 +3,6 @@ export type PostDTO = {
     title: string;
     content: string;
     createdAt: Date;
+    userId: string;
+    author: string;
 };

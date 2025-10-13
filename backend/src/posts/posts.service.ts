@@ -21,6 +21,8 @@ export class PostsService {
             title: post.title,
             content: post.content,
             createdAt: post.createdAt,
+            userId: post.userId.toString(),
+            author: post.author,
         };
     }
 
