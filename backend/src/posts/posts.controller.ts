@@ -22,7 +22,7 @@ export class PostsController {
 
     @Get()
     async getPosts(@Req() req) {
-        return this.postsService.getPostsWithLikes(req.user.id);
+        return this.postsService.getPostsWithDetails(req.user.id);
     }
 
     @Post()

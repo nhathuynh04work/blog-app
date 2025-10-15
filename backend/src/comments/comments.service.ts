@@ -47,7 +47,7 @@ export class CommentsService {
 
     async getCommentsByPostIds(
         postIds: ObjectId[],
-    ): Promise<{ _id: string; comments: CommentDTO[] }[]> {
+    ): Promise<{ _id: ObjectId; comments: CommentDTO[] }[]> {
         if (!postIds || postIds.length === 0) return [];
 
         const result = await this.commentsRepository
@@ -76,8 +76,10 @@ export class CommentsService {
     }
 
     toMap(
-        groupedComments: { _id: string; comments: CommentDTO[] }[],
+        groupedComments: { _id: ObjectId; comments: CommentDTO[] }[],
     ): Map<string, CommentDTO[]> {
-        return new Map(groupedComments.map((c) => [c._id, c.comments]));
+        return new Map(
+            groupedComments.map((c) => [c._id.toString(), c.comments]),
+        );
     }
 }
