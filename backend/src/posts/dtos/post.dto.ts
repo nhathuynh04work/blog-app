@@ -6,3 +6,8 @@ export type PostDTO = {
     userId: string;
     author: string;
 };
+
+export type PostWithLikes = PostDTO & {
+    likeCount: number;
+    likedByCurrentUser: boolean;
+};
