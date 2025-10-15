@@ -52,7 +52,10 @@ export default function PostCard({ post }: { post: PostWithSummary }) {
 
 			<CardFooter className="flex justify-end items-center gap-4 px-4">
 				<LikeButton post={post} />
-				<CommentDialog postId={post.id} commentCount={post.commentCount} />
+				<CommentDialog
+					postId={post.id}
+					commentCount={post.commentCount}
+				/>
 			</CardFooter>
 		</Card>
 	);

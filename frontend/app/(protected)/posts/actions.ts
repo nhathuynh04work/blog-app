@@ -47,3 +47,7 @@ export async function addComment(
 
 	return data;
 }
+
+export async function deleteComment(commentId: string) {
+	await serverApi.delete(`/comments/${commentId}`);
+}

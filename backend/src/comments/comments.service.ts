@@ -44,8 +44,8 @@ export class CommentsService {
         return { success: true };
     }
 
-    async getCommentsByPostId(postId: ObjectId) {
-        return this.commentsRepository.find({
+    async getCommentsByPostId(postId: ObjectId): Promise<CommentDTO[]> {
+        const comments = await this.commentsRepository.find({
             where: {
                 postId,
             },
@@ -53,6 +53,8 @@ export class CommentsService {
                 createdAt: "ASC",
             },
         });
+
+        return comments.map((c) => this.mapToDTO(c));
     }
 
     async countCommentsByPostIds(postIds: ObjectId[]) {

@@ -16,18 +16,17 @@ import {
 } from "./dtos/create-comment.dto";
 import { ObjectId } from "mongodb";
 
-@Controller("/comments")
+@Controller("comments")
 export class CommentsController {
     constructor(private commentsService: CommentsService) {}
 
-    @Delete("/:id") async deleteComment(
-        @Param("id", ParseObjectIdPipe) id: ObjectId,
-    ) {
+    @Delete("/:id")
+    async deleteComment(@Param("id", ParseObjectIdPipe) id: ObjectId) {
         return this.commentsService.delete(id);
     }
 }
 
-@Controller("/posts/:postId/comments")
+@Controller("posts/:postId/comments")
 export class PostCommentsController {
     constructor(private commentsService: CommentsService) {}
 
