@@ -4,7 +4,7 @@ import { Column, CreateDateColumn, Entity, ObjectIdColumn } from "typeorm";
 @Entity("comments")
 export class Comment {
     @ObjectIdColumn()
-    id: ObjectId;
+    _id: ObjectId;
 
     @Column()
     userId: ObjectId;

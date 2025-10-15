@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post, Req } from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { ParseObjectIdPipe } from "src/common/pipes/parse-object-id.pipe";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
@@ -8,8 +8,16 @@ import {
 } from "./dtos/create-comment.dto";
 import { ObjectId } from "mongodb";
 
-@Controller("comments")
-export class CommentsController {}
+@Controller("/comments")
+export class CommentsController {
+    constructor(private commentsService: CommentsService) {}
+    
+    @Delete("/:id") async deleteComment(
+        @Param("id", ParseObjectIdPipe) id: ObjectId,
+    ) {
+        return this.commentsService.delete(id);
+    }
+}
 
 @Controller("/posts/:postId/comments")
 export class PostCommentsController {
