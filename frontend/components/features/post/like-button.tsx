@@ -1,37 +1,18 @@
 "use client";
 
+import { useLike } from "@/app/hooks/useLike";
 import { Button } from "@/components/ui/button";
-import clientApi from "@/lib/clientApi";
+import { EntityType } from "@/types/entity-type.enum";
 import { Post } from "@/types/post";
 import { Heart } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export default function LikeButton({ post }: { post: Post }) {
-	const [liked, setLiked] = useState(post.likedByCurrentUser);
-	const [likeCount, setLikeCount] = useState(post.likeCount);
-	const [isPending, setIsPending] = useState(false);
-
-	async function toggleLike() {
-		if (isPending) return;
-
-		// Optimistic update
-		setLiked(!liked);
-		setLikeCount(likeCount + (liked ? -1 : 1));
-		setIsPending(true);
-
-		try {
-			if (liked) await clientApi.delete(`/posts/${post.id}/likes`);
-			else await clientApi.post(`/posts/${post.id}/likes`);
-		} catch {
-			// Revert on error
-			setLiked(liked);
-			setLikeCount(likeCount);
-			toast.error(liked ? "Fail to unlike post" : "Fail to like post");
-		} finally {
-			setIsPending(false);
-		}
-	}
+	const { liked, likeCount, toggleLike, isPending } = useLike(
+		EntityType.POST,
+		post.id,
+		post.likedByCurrentUser,
+		post.likeCount
+	);
 
 	return (
 		<Button
