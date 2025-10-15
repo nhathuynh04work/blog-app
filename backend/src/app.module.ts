@@ -9,7 +9,8 @@ import { Post } from "./posts/entities/post.entity";
 import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/entities/user.entity";
-import { Like } from "./posts/entities/like.entity";
+import { Like } from "./likes/like.entity";
+import { LikesModule } from './likes/likes.module';
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import { Like } from "./posts/entities/like.entity";
         PostsModule,
         AuthModule,
         UsersModule,
+        LikesModule,
     ],
     controllers: [AppController],
     providers: [AppService],
