@@ -21,8 +21,8 @@ export class PostsController {
     constructor(private postsService: PostsService) {}
 
     @Get()
-    async getPosts() {
-        return this.postsService.getPosts();
+    async getPosts(@Req() req) {
+        return this.postsService.getPostsWithLikes(req.user.id);
     }
 
     @Post()
