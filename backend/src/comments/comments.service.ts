@@ -5,7 +5,6 @@ import { MongoRepository } from "typeorm";
 import { ObjectId } from "mongodb";
 import { UserDTO } from "src/users/dtos/user.dto";
 import { CommentDTO } from "./dtos/comment.dto";
-import { success } from "zod";
 
 @Injectable()
 export class CommentsService {
@@ -45,41 +44,35 @@ export class CommentsService {
         return { success: true };
     }
 
-    async getCommentsByPostIds(
-        postIds: ObjectId[],
-    ): Promise<{ _id: ObjectId; comments: CommentDTO[] }[]> {
+    async getCommentsByPostId(postId: ObjectId) {
+        return this.commentsRepository.find({
+            where: {
+                postId,
+            },
+            order: {
+                createdAt: "ASC",
+            },
+        });
+    }
+
+    async countCommentsByPostIds(postIds: ObjectId[]) {
         if (!postIds || postIds.length === 0) return [];
 
-        const result = await this.commentsRepository
+        const counts = await this.commentsRepository
             .aggregate([
                 { $match: { postId: { $in: postIds } } },
-                { $sort: { createdAt: 1 } },
                 {
                     $group: {
                         _id: "$postId",
-                        comments: {
-                            $push: {
-                                id: { $toString: "$_id" },
-                                userId: { $toString: "$userId" },
-                                author: "$author",
-                                postId: { $toString: "$postId" },
-                                content: "$content",
-                                createdAt: "$createdAt",
-                            },
-                        },
+                        count: { $sum: 1 },
                     },
                 },
             ])
             .toArray();
 
-        return result;
-    }
-
-    toMap(
-        groupedComments: { _id: ObjectId; comments: CommentDTO[] }[],
-    ): Map<string, CommentDTO[]> {
-        return new Map(
-            groupedComments.map((c) => [c._id.toString(), c.comments]),
-        );
+        return counts.map((c) => ({
+            postId: c._id.toString(),
+            count: c.count,
+        }));
     }
 }

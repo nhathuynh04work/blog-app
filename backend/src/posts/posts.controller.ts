@@ -11,7 +11,7 @@ import {
 import { PostsService } from "./posts.service";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { type CreatePostDTO, CreatePostSchema } from "./dtos/create-post.dto";
-import { PostDTO } from "./dtos/post.dto";
+import { PostDTO, PostWithSummary } from "./dtos/post.dto";
 import { UpdatePostSchema, type UpdatePostDTO } from "./dtos/update-post.dto";
 import { ParseObjectIdPipe } from "src/common/pipes/parse-object-id.pipe";
 import { ObjectId } from "mongodb";
@@ -21,8 +21,8 @@ export class PostsController {
     constructor(private postsService: PostsService) {}
 
     @Get()
-    async getPosts(@Req() req) {
-        return this.postsService.getPostsWithDetails(req.user.id);
+    async getPosts(@Req() req): Promise<PostWithSummary[]> {
+        return this.postsService.getPostsWithSummary(req.user.id);
     }
 
     @Post()

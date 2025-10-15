@@ -78,8 +78,4 @@ export class LikesService {
             likedByCurrentUser: l.likedByCurrentUser.length > 0,
         }));
     }
-
-    toMap(likeSummaries: LikeSummary[]): Map<string, LikeSummary> {
-        return new Map(likeSummaries.map((l) => [l.entityId, l]));
-    }
 }

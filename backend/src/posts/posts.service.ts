@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { Post } from "./entities/post.entity";
 import { CreatePostDTO } from "./dtos/create-post.dto";
-import { PostDTO, PostWithDetails } from "./dtos/post.dto";
+import { PostDTO, PostWithSummary } from "./dtos/post.dto";
 import { UpdatePostDTO } from "./dtos/update-post.dto";
 import { ObjectId } from "mongodb";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -14,7 +14,6 @@ import { UserDTO } from "src/users/dtos/user.dto";
 import { LikesService, LikeSummary } from "src/likes/likes.service";
 import { EntityType } from "src/common/enums/entity-type.enum";
 import { CommentsService } from "src/comments/comments.service";
-import { CommentDTO } from "src/comments/dtos/comment.dto";
 
 @Injectable()
 export class PostsService {
@@ -36,17 +35,11 @@ export class PostsService {
         };
     }
 
-    private mapPostDetail(
+    private mapPostSummary(
         post: Post,
-        likeSummaries: LikeSummary[],
-        commentsArray: { _id: ObjectId; comments: CommentDTO[] }[],
-    ): PostWithDetails {
-        const likeMap = this.likesService.toMap(likeSummaries);
-        const commentsMap = this.commentsService.toMap(commentsArray);
-
-        const like = likeMap.get(post._id.toString());
-        const postComments = commentsMap.get(post._id.toString()) || [];
-
+        commentCount: number,
+        likeSummary?: LikeSummary,
+    ): PostWithSummary {
         return {
             id: post._id.toString(),
             title: post.title,
@@ -54,47 +47,44 @@ export class PostsService {
             createdAt: post.createdAt,
             userId: post.userId.toString(),
             author: post.author,
-            likeCount: like?.likeCount || 0,
-            likedByCurrentUser: like?.likedByCurrentUser || false,
-            comments: postComments,
+            likeCount: likeSummary?.likeCount || 0,
+            likedByCurrentUser: likeSummary?.likedByCurrentUser || false,
+            commentCount,
         };
     }
 
-    async getPosts(): Promise<PostDTO[]> {
-        const posts = await this.postsRepository.find();
-        return posts.map((post) => this.mapPostDTO(post));
-    }
-
-    async getPostsByUserId(userId: string): Promise<PostDTO[]> {
-        const posts = await this.postsRepository.find({
-            where: {
-                userId: new ObjectId(userId),
-            },
-        });
-
-        return posts.map((post) => this.mapPostDTO(post));
-    }
-
-    async getPostsWithDetails(
+    async getPostsWithSummary(
         currentUserId: string,
-    ): Promise<PostWithDetails[]> {
+    ): Promise<PostWithSummary[]> {
         const posts = await this.postsRepository.find();
         if (!posts.length) return [];
 
         const postIds = posts.map((p) => p._id);
 
+        // Like count + liked by current user
         const likeSummaries = await this.likesService.getLikeSummary(
             EntityType.POST,
             postIds,
             new ObjectId(currentUserId),
         );
 
-        const commentsArray =
-            await this.commentsService.getCommentsByPostIds(postIds);
+        // Comment counts
+        const commentCounts =
+            await this.commentsService.countCommentsByPostIds(postIds);
 
-        return posts.map((p) =>
-            this.mapPostDetail(p, likeSummaries, commentsArray),
-        );
+        // Merge everything
+        return posts.map((p) => {
+            const postId = p._id.toString();
+
+            const likeSummary = likeSummaries.find(
+                (s) => s.entityId === postId,
+            );
+            const commentCount = commentCounts.find(
+                (c) => c.postId === postId,
+            )?.count ?? 0;
+
+            return this.mapPostSummary(p, commentCount, likeSummary);
+        });
     }
 
     async createPost(data: CreatePostDTO, user: UserDTO): Promise<PostDTO> {

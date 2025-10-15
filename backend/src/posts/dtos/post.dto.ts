@@ -9,19 +9,8 @@ export type PostDTO = {
     author: string;
 };
 
-export type PostWithLikes = PostDTO & {
+export type PostWithSummary = PostDTO & {
     likeCount: number;
     likedByCurrentUser: boolean;
-};
-
-export type PostWithDetails = {
-    id: string;
-    title: string;
-    content: string;
-    createdAt: Date;
-    userId: string;
-    author: string;
-    likeCount: number;
-    likedByCurrentUser: boolean;
-    comments: CommentDTO[];
+    commentCount: number;
 };

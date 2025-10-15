@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Param, Post, Req } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Req,
+} from "@nestjs/common";
 import { CommentsService } from "./comments.service";
 import { ParseObjectIdPipe } from "src/common/pipes/parse-object-id.pipe";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
@@ -11,7 +19,7 @@ import { ObjectId } from "mongodb";
 @Controller("/comments")
 export class CommentsController {
     constructor(private commentsService: CommentsService) {}
-    
+
     @Delete("/:id") async deleteComment(
         @Param("id", ParseObjectIdPipe) id: ObjectId,
     ) {
@@ -23,7 +31,13 @@ export class CommentsController {
 export class PostCommentsController {
     constructor(private commentsService: CommentsService) {}
 
-    @Post() async addComment(
+    @Get()
+    async getComments(@Param("postId", ParseObjectIdPipe) postId: ObjectId) {
+        return this.commentsService.getCommentsByPostId(postId);
+    }
+
+    @Post()
+    async addComment(
         @Param("postId", ParseObjectIdPipe) postId: ObjectId,
         @Body(new ZodValidationPipe(CreateCommentSchema))
         data: CreateCommentDTO,
