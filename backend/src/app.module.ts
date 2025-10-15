@@ -10,7 +10,9 @@ import { AuthModule } from "./auth/auth.module";
 import { UsersModule } from "./users/users.module";
 import { User } from "./users/entities/user.entity";
 import { Like } from "./likes/like.entity";
-import { LikesModule } from './likes/likes.module';
+import { LikesModule } from "./likes/likes.module";
+import { CommentsModule } from "./comments/comments.module";
+import { Comment } from "./comments/comment.entity";
 
 @Module({
     imports: [
@@ -28,13 +30,14 @@ import { LikesModule } from './likes/likes.module';
                 url: configService.get<string>("MONGO_URI"),
                 database: configService.get<string>("DB_NAME"),
                 synchronize: true,
-                entities: [Post, User, Like],
+                entities: [Post, User, Like, Comment],
             }),
         }),
         PostsModule,
         AuthModule,
         UsersModule,
         LikesModule,
+        CommentsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
