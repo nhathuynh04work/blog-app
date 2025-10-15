@@ -1,6 +1,6 @@
 "use server";
 
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 import { cookies } from "next/headers";
 
 const serverApi = axios.create({
@@ -10,35 +10,19 @@ const serverApi = axios.create({
 	},
 });
 
-export async function serverApiGet(url: string) {
+// Axios request interceptor to attach cookie automatically
+serverApi.interceptors.request.use(async (config) => {
 	const cookieHeader = await cookies();
-	return serverApi.get(url, {
-		headers: { Cookie: cookieHeader.toString() },
-	});
-}
+	const cookie = cookieHeader.toString();
 
-export async function serverApiPost(url: string, data: unknown) {
-	const cookieHeader = await cookies();
-	return serverApi.post(url, data, {
-		headers: { Cookie: cookieHeader.toString() },
-	});
-}
+	if (cookie) {
+		config.headers = new AxiosHeaders(config.headers).set("Cookie", cookie);
+	}
 
-export async function serverApiPatch(url: string, data: unknown) {
-	const cookieHeader = await cookies();
-	return serverApi.patch(url, data, {
-		headers: { Cookie: cookieHeader.toString() },
-	});
-}
+	return config;
+});
 
-export async function serverApiDelete(url: string) {
-	const cookieHeader = await cookies();
-	return serverApi.delete(url, {
-		headers: { Cookie: cookieHeader.toString() },
-	});
-}
-
-// Res interceptors
+// Response interceptor
 serverApi.interceptors.response.use(
 	(response) => response,
 	(error) => {
