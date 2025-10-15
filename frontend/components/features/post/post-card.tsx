@@ -13,7 +13,6 @@ import { format } from "date-fns";
 import { getNameInitials } from "@/lib/format";
 import { Separator } from "@/components/ui/separator";
 import LikeButton from "./like-button";
-import { CommentButton } from "./comment-button";
 import { CommentDialog } from "./comment-dialog";
 
 export default function PostCard({ post }: { post: PostWithSummary }) {

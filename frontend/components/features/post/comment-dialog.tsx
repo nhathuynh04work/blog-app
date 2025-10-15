@@ -10,12 +10,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { CommentButton } from "./comment-button";
-import { useQuery } from "@tanstack/react-query";
-import { getComments } from "@/app/(protected)/posts/actions";
-import { Comment } from "@/types/comment";
 import { CommentItem } from "./comment-item";
+import { useComment } from "@/app/hooks/useComment";
 
 interface CommentDialogProps {
 	postId: string;
@@ -23,18 +20,15 @@ interface CommentDialogProps {
 }
 
 export function CommentDialog({ postId, commentCount }: CommentDialogProps) {
-	const [newComment, setNewComment] = useState("");
-
 	const {
-		data: comments = [],
+		comments,
 		isPending,
 		isError,
-	} = useQuery<Comment[]>({
-		queryKey: ["comments", postId],
-		queryFn: () => getComments(postId),
-	});
-
-	const handleAddComment = async () => {};
+		isSubmitting,
+		newComment,
+		setNewComment,
+		handleAddComment,
+	} = useComment(postId);
 
 	return (
 		<Dialog>
@@ -48,7 +42,7 @@ export function CommentDialog({ postId, commentCount }: CommentDialogProps) {
 				</DialogHeader>
 
 				{/* Comments list */}
-				<ScrollArea className="max-h-80 space-y-8 pr-2">
+				<ScrollArea className="max-h-80 pr-2">
 					{isPending ? (
 						<p className="text-sm text-muted-foreground">
 							Loading...
@@ -74,10 +68,10 @@ export function CommentDialog({ postId, commentCount }: CommentDialogProps) {
 						value={newComment}
 						onChange={(e) => setNewComment(e.target.value)}
 						placeholder="Add a comment..."
-						disabled={false}
+						disabled={isSubmitting}
 					/>
-					<Button onClick={handleAddComment} disabled={false}>
-						{false ? "Sending..." : "Send"}
+					<Button onClick={handleAddComment} disabled={isSubmitting}>
+						{isSubmitting ? "Sending..." : "Send"}
 					</Button>
 				</div>
 			</DialogContent>
