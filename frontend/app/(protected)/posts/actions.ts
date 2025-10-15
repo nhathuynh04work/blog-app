@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { UpdatePostDTO } from "./dtos/update-post.dto";
 import { CreatePostDTO } from "./dtos/create-post.dto";
 import serverApi from "@/lib/serverApi";
+import { Comment } from "@/types/comment";
 
 export async function getPosts(): Promise<PostWithSummary[]> {
 	const { data } = await serverApi.get("/posts");
@@ -29,4 +30,9 @@ export async function updatePost(
 export async function deletePost(id: string): Promise<void> {
 	await serverApi.delete(`posts/${id}`);
 	revalidatePath("/posts");
+}
+
+export async function getComments(postId: string): Promise<Comment[]> {
+	const { data } = await serverApi.get(`posts/${postId}/comments`);
+	return data;
 }
