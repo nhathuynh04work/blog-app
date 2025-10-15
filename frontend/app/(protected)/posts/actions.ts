@@ -1,12 +1,12 @@
 "use server";
 
-import { Post } from "@/types/post";
+import { Post, PostWithSummary } from "@/types/post";
 import { revalidatePath } from "next/cache";
 import { UpdatePostDTO } from "./dtos/update-post.dto";
 import { CreatePostDTO } from "./dtos/create-post.dto";
 import serverApi from "@/lib/serverApi";
 
-export async function getPosts() {
+export async function getPosts(): Promise<PostWithSummary[]> {
 	const { data } = await serverApi.get("/posts");
 	return data;
 }

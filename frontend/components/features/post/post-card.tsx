@@ -8,7 +8,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Post } from "@/types/post";
+import { PostWithSummary } from "@/types/post";
 import { format } from "date-fns";
 import { getNameInitials } from "@/lib/format";
 import { useAuth } from "@/app/providers/auth-provider";
@@ -17,8 +17,9 @@ import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import LikeButton from "./like-button";
+import { CommentButton } from "./comment-button";
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post }: { post: PostWithSummary }) {
 	const initials = getNameInitials(post.author);
 	const { user } = useAuth();
 
@@ -55,7 +56,10 @@ export default function PostCard({ post }: { post: Post }) {
 			<Separator orientation="horizontal" />
 
 			<CardFooter className="flex justify-between items-center px-4">
-				<LikeButton post={post} />
+				<div className="flex items-center gap-4">
+					<LikeButton post={post} />
+					<CommentButton count={post.commentCount} />
+				</div>
 
 				{user?.id === post.userId && (
 					<UpdatePostDialog post={post}>
