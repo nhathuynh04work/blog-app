@@ -1,3 +1,5 @@
+import { CommentDTO } from "src/comments/dtos/comment.dto";
+
 export type PostDTO = {
     id: string;
     title: string;
@@ -7,7 +9,8 @@ export type PostDTO = {
     author: string;
 };
 
-export type PostWithLikes = PostDTO & {
+export type PostWithSummary = PostDTO & {
     likeCount: number;
     likedByCurrentUser: boolean;
+    commentCount: number;
 };

@@ -1,9 +1,9 @@
 "use client";
 
-import { Post } from "@/types/post";
+import { PostWithSummary } from "@/types/post";
 import PostCard from "./post-card";
 
-export default function PostList({ posts }: { posts: Post[] }) {
+export default function PostList({ posts }: { posts: PostWithSummary[] }) {
 	if (!posts.length)
 		return (
 			<p className="text-muted-foreground text-sm">No posts available.</p>
