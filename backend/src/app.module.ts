@@ -18,7 +18,7 @@ import { Comment } from "./comments/comment.entity";
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: `.env.${process.env.NODE_ENV || "development"}`,
+            envFilePath: ".env",
             validate,
             expandVariables: true,
         }),
