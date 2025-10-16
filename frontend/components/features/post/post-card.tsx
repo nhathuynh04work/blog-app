@@ -8,19 +8,15 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Post } from "@/types/post";
+import { PostWithSummary } from "@/types/post";
 import { format } from "date-fns";
 import { getNameInitials } from "@/lib/format";
-import { useAuth } from "@/app/providers/auth-provider";
-import UpdatePostDialog from "./update-post-dialog";
-import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import LikeButton from "./like-button";
+import { CommentDialog } from "./comment-dialog";
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post }: { post: PostWithSummary }) {
 	const initials = getNameInitials(post.author);
-	const { user } = useAuth();
 
 	return (
 		<Card className="transition-shadow hover:shadow-lg rounded-2xl border border-muted/30">
@@ -54,20 +50,12 @@ export default function PostCard({ post }: { post: Post }) {
 
 			<Separator orientation="horizontal" />
 
-			<CardFooter className="flex justify-between items-center px-4">
+			<CardFooter className="flex justify-end items-center gap-4 px-4">
 				<LikeButton post={post} />
-
-				{user?.id === post.userId && (
-					<UpdatePostDialog post={post}>
-						<Button
-							size="sm"
-							variant="ghost"
-							className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
-							<Edit className="w-4 h-4" />
-							<span>Edit</span>
-						</Button>
-					</UpdatePostDialog>
-				)}
+				<CommentDialog
+					postId={post.id}
+					commentCount={post.commentCount}
+				/>
 			</CardFooter>
 		</Card>
 	);

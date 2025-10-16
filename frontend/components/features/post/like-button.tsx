@@ -3,10 +3,10 @@
 import { useLike } from "@/app/hooks/useLike";
 import { Button } from "@/components/ui/button";
 import { EntityType } from "@/types/entity-type.enum";
-import { Post } from "@/types/post";
+import { PostWithSummary } from "@/types/post";
 import { Heart } from "lucide-react";
 
-export default function LikeButton({ post }: { post: Post }) {
+export default function LikeButton({ post }: { post: PostWithSummary }) {
 	const { liked, likeCount, toggleLike, isPending } = useLike(
 		EntityType.POST,
 		post.id,
