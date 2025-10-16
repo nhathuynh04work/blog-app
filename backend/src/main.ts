@@ -8,7 +8,12 @@ async function bootstrap() {
     const config = app.get(ConfigService);
 
     app.setGlobalPrefix("api");
-    app.enableCors({ origin: config.get<string>("FRONTEND_URL"), credentials: true });
+    app.enableCors({
+        origin: (origin, callback) => {
+            callback(null, true); // Allow all origins dynamically
+        },
+        credentials: true,
+    });
     app.use(cookieParser()); // FIXME: add a secret in here
 
     const port = config.get<number>("PORT") || 4000;
