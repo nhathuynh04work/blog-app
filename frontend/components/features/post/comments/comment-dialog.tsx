@@ -1,5 +1,9 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { CommentButton } from "./comment-button";
+import { CommentItem } from "./comment-item";
 import {
 	Dialog,
 	DialogContent,
@@ -7,12 +11,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { CommentButton } from "./comment-button";
-import { CommentItem } from "./comment-item";
 import { useComment } from "@/app/hooks/useComment";
+import { Input } from "@/components/ui/input";
 
 interface CommentDialogProps {
 	postId: string;

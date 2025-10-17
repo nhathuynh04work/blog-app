@@ -1,7 +1,11 @@
+"use server";
+
 import { ACCESS_TOKEN_KEY } from "@/lib/constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import AuthProvider from "../providers/auth-provider";
+import { getMe } from "../actions/auth";
+import UserProvider from "../providers/user-provider";
+import TopBar from "@/components/layout/top-bar";
 
 export default async function ProtectedLayout({
 	children,
@@ -15,5 +19,12 @@ export default async function ProtectedLayout({
 		redirect("/auth/login");
 	}
 
-	return <AuthProvider>{children}</AuthProvider>;
+	const user = await getMe();
+
+	return (
+		<UserProvider user={user}>
+			<TopBar />
+			{children}
+		</UserProvider>
+	);
 }

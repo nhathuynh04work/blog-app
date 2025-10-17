@@ -4,7 +4,7 @@ import {
 	CreatePostDTO,
 	CreatePostSchema,
 } from "@/app/(protected)/posts/dtos/create-post.dto";
-import { useCreatePost } from "@/app/(protected)/posts/hooks/useCreatePost";
+import { usePostMutations } from "@/app/hooks/usePostMutations";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
@@ -30,10 +30,11 @@ export default function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 		defaultValues: { title: "", content: "" },
 	});
 
-	const { mutateAsync, isPending } = useCreatePost();
+	const { create } = usePostMutations();
+	const { mutateAsync: createPost, isPending } = create;
 
 	async function onSubmit(values: CreatePostDTO) {
-		await mutateAsync(values);
+		await createPost(values);
 		onSuccess?.(); //Close the dialog
 	}
 

@@ -1,13 +1,9 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-	addComment,
-	getComments,
-	deleteComment,
-} from "@/app/(protected)/posts/actions";
 import { Comment } from "@/types/comment";
 import { useState } from "react";
+import { addComment, deleteComment, getComments } from "../actions/comment";
 
 export function useComment(postId: string) {
 	const [newComment, setNewComment] = useState("");
