@@ -11,8 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CommentButton } from "./comment-button";
-import { CommentItem } from "./comment-item";
 import { useComment } from "@/app/hooks/useComment";
+import { CommentItem } from "./comment-item";
 
 interface CommentDialogProps {
 	postId: string;

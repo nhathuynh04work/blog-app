@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LoginDTO, LoginSchema } from "@/app/auth/dtos/login.dto";
-import { login } from "@/app/auth/login/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { login } from "@/lib/api/auth";
 
 export default function LoginForm() {
 	const form = useForm<LoginDTO>({
@@ -30,8 +30,7 @@ export default function LoginForm() {
 			await login(values);
 			toast.success("Login successfully!");
 			router.push("/posts");
-		} catch (err) {
-			console.log(err);
+		} catch {
 			toast.error("Failed to log you in.");
 		}
 	}

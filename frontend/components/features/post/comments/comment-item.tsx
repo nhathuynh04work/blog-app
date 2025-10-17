@@ -1,27 +1,23 @@
 "use client";
 
-import { useAuth } from "@/app/providers/auth-provider";
 import { type Comment } from "@/types/comment";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useComment } from "@/app/hooks/useComment";
 import { timeSince } from "@/lib/format";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/app/providers/user-provider";
+import UserAvatar from "../../../layout/user-avatar";
 
 export function CommentItem({ comment }: { comment: Comment }) {
-	const { user } = useAuth();
+	const { user } = useUser();
 	const { handleDeleteComment, isDeleting } = useComment(comment.postId);
+
 	const isOwner = user?.id === comment.userId;
 
 	return (
 		<div className="flex items-start gap-3 mb-3">
 			{/* Avatar */}
-			<Avatar className="h-8 w-8">
-				<AvatarImage src={undefined} alt={comment.author} />
-				<AvatarFallback>
-					{comment.author.charAt(0).toUpperCase()}
-				</AvatarFallback>
-			</Avatar>
+			<UserAvatar name={comment.author} />
 
 			{/* Comment bubble */}
 			<div className="flex flex-col">

@@ -2,10 +2,9 @@
 
 import { Post, PostWithSummary } from "@/types/post";
 import { revalidatePath } from "next/cache";
-import { UpdatePostDTO } from "./dtos/update-post.dto";
-import { CreatePostDTO } from "./dtos/create-post.dto";
-import serverApi from "@/lib/serverApi";
-import { Comment } from "@/types/comment";
+import serverApi from "@/app/actions/serverApi";
+import { CreatePostDTO } from "../(protected)/posts/dtos/create-post.dto";
+import { UpdatePostDTO } from "../(protected)/posts/dtos/update-post.dto";
 
 export async function getPosts(): Promise<PostWithSummary[]> {
 	const { data } = await serverApi.get("/posts");
@@ -30,24 +29,4 @@ export async function updatePost(
 export async function deletePost(id: string): Promise<void> {
 	await serverApi.delete(`posts/${id}`);
 	revalidatePath("/posts");
-}
-
-export async function getComments(postId: string): Promise<Comment[]> {
-	const { data } = await serverApi.get(`posts/${postId}/comments`);
-	return data;
-}
-
-export async function addComment(
-	postId: string,
-	content: string
-): Promise<Comment> {
-	const { data } = await serverApi.post(`posts/${postId}/comments`, {
-		content,
-	});
-
-	return data;
-}
-
-export async function deleteComment(commentId: string) {
-	await serverApi.delete(`/comments/${commentId}`);
 }

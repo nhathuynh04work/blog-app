@@ -1,6 +1,6 @@
 "use client";
 
-import clientApi from "@/lib/clientApi";
+import clientApi from "@/lib/api/clientApi";
 import { type EntityType } from "@/types/entity-type.enum";
 import { useState } from "react";
 
