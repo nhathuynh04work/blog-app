@@ -9,12 +9,13 @@ async function bootstrap() {
 
     app.setGlobalPrefix("api");
     app.enableCors({
-        origin: (origin, callback) => {
-            callback(null, true); // Allow all origins dynamically
-        },
+        origin:
+            config.get("NODE_ENV") === "production"
+                ? config.get("CORS_ORIGIN")
+                : "http://localhost:3000",
         credentials: true,
     });
-    app.use(cookieParser()); // FIXME: add a secret in here
+    app.use(cookieParser());
 
     const port = config.get<number>("PORT") || 4000;
     await app.listen(port);
