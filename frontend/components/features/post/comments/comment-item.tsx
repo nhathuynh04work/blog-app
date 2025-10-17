@@ -6,7 +6,7 @@ import { Trash2 } from "lucide-react";
 import { useComment } from "@/app/hooks/useComment";
 import { timeSince } from "@/lib/format";
 import { useUser } from "@/app/providers/user-provider";
-import UserAvatar from "../../layout/user-avatar";
+import UserAvatar from "../../../layout/user-avatar";
 
 export function CommentItem({ comment }: { comment: Comment }) {
 	const { user } = useUser();

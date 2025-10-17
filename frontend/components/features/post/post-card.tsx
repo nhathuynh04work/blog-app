@@ -12,7 +12,7 @@ import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
 import LikeButton from "./like-button";
 import { CommentDialog } from "./comments/comment-dialog";
-import UserAvatar from "../layout/user-avatar";
+import UserAvatar from "../../layout/user-avatar";
 
 export default function PostCard({ post }: { post: PostWithSummary }) {
 	return (

@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getMe } from "../actions/auth";
 import UserProvider from "../providers/user-provider";
-import TopBar from "@/components/features/layout/top-bar";
+import TopBar from "@/components/layout/top-bar";
 
 export default async function ProtectedLayout({
 	children,
