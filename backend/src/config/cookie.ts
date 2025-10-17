@@ -5,5 +5,9 @@ export const cookieConfig: CookieOptions = {
     maxAge: 3600 * 1000,
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
+    domain:
+        process.env.NODE_ENV === "production"
+            ? process.env.COOKIE_DOMAIN
+            : undefined,
     path: "/",
 };
