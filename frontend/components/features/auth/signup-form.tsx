@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
 import { SignupDTO, SignupSchema } from "@/app/auth/dtos/signup.dto";
-import { signup } from "@/app/auth/signup/actions";
+import { signup } from "@/lib/api/auth";
 
 export default function SignupForm() {
 	const form = useForm<SignupDTO>({
@@ -32,7 +32,7 @@ export default function SignupForm() {
 		try {
 			await signup(values);
 			toast.success("Account created successfully");
-		} catch (err) {
+		} catch {
 			toast.error("Failed to create account");
 		}
 	}

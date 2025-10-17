@@ -1,7 +1,7 @@
-"use client";
+"use server";
 
 import LoginForm from "@/components/features/auth/login-form";
 
-export default function LoginPage() {
+export default async function LoginPage() {
 	return <LoginForm />;
 }

@@ -23,7 +23,7 @@ import {
 } from "@/app/(protected)/posts/dtos/update-post.dto";
 import { useUpdatePost } from "@/app/(protected)/posts/hooks/useUpdatePost";
 import { useDeletePost } from "@/app/(protected)/posts/hooks/useDeletePost";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useUser } from "@/app/providers/user-provider";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;
@@ -42,7 +42,7 @@ export default function UpdatePostForm({
 	const [isPending, startTransition] = useTransition();
 	const { mutateAsync: updatePost } = useUpdatePost();
 	const { mutateAsync: deletePost } = useDeletePost();
-	const { user } = useAuth();
+	const { user } = useUser();
 
 	const isOwner = user?.id === post.userId;
 

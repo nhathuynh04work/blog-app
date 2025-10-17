@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { UpdatePostDTO } from "../dtos/update-post.dto";
-import { updatePost } from "../actions";
+import { updatePost } from "@/app/actions/post";
 
 export function useUpdatePost() {
 	const queryClient = useQueryClient();
