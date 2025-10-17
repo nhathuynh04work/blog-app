@@ -21,9 +21,8 @@ import {
 	UpdatePostDTO,
 	UpdatePostSchema,
 } from "@/app/(protected)/posts/dtos/update-post.dto";
-import { useUpdatePost } from "@/app/(protected)/posts/hooks/useUpdatePost";
-import { useDeletePost } from "@/app/(protected)/posts/hooks/useDeletePost";
 import { useUser } from "@/app/providers/user-provider";
+import { usePostMutations } from "@/app/hooks/usePostMutations";
 
 interface UpdatePostFormProps {
 	onSuccess?: () => void;
@@ -40,8 +39,7 @@ export default function UpdatePostForm({
 	});
 
 	const [isPending, startTransition] = useTransition();
-	const { mutateAsync: updatePost } = useUpdatePost();
-	const { mutateAsync: deletePost } = useDeletePost();
+	const { update, remove } = usePostMutations();
 	const { user } = useUser();
 
 	const isOwner = user?.id === post.userId;
@@ -49,7 +47,7 @@ export default function UpdatePostForm({
 	function onSubmit(values: UpdatePostDTO) {
 		if (!isOwner) return;
 		startTransition(async () => {
-			await updatePost({ id: post.id, data: values });
+			await update.mutateAsync({ id: post.id, data: values });
 			onSuccess?.(); // close the dialog
 		});
 	}
@@ -57,7 +55,7 @@ export default function UpdatePostForm({
 	function onDelete() {
 		if (!isOwner) return;
 		startTransition(async () => {
-			await deletePost(post.id);
+			await remove.mutateAsync(post.id);
 			onSuccess?.(); // close the dialog
 		});
 	}
